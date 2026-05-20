@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/ilham-java-7700/ecommerce-gitops.git'
+    repoURL: 'https://github.com/ilhamzefer-sketch/ecommerce-gitops.git'
     targetRevision: HEAD
     path: apps/ecommerce-auth
   destination:
