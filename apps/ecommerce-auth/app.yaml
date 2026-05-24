@@ -24,7 +24,7 @@ spec:
         - name: SPRING_PROFILES_ACTIVE
           value: "postgres"
         - name: SPRING_DATASOURCE_URL
-          value: "jdbc:postgresql://postgres-service:5432/ecommerce?currentSchema=ecommerce_auth"
+          value: "jdbc:postgresql://postgres-service:5433/ecommerce?currentSchema=ecommerce_auth"
         - name: SPRING_DATASOURCE_USERNAME
           value: "postgres"
         - name: SPRING_DATASOURCE_PASSWORD
