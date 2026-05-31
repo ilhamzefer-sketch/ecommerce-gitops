@@ -14,10 +14,12 @@ spec:
       labels:
         app: ecommerce-auth-app
     spec:
+      imagePullSecrets:
+      - name: ghcr-pull-secret
       containers:
       - name: ecommerce-auth-app
-        image: ecommerce-auth-ecommerce-auth:latest
-        imagePullPolicy: Never # Use local image built by docker-compose/docker build
+        image: ghcr.io/ilhamzefer-sketch/ecommerce-auth:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
         env:
