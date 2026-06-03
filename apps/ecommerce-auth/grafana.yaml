@@ -9,19 +9,6 @@ stringData:
   admin-user: admin
   admin-password: admin
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: grafana-storage
-  labels:
-    app: grafana
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -74,8 +61,7 @@ spec:
             periodSeconds: 20
       volumes:
         - name: grafana-storage
-          persistentVolumeClaim:
-            claimName: grafana-storage
+          emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
