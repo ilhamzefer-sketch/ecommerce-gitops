@@ -18,7 +18,7 @@ spec:
       - name: ghcr-pull-secret
       containers:
       - name: ecommerce-auth-app
-        image: ghcr.io/ilhamzefer-sketch/ecommerce-auth:2797f90a6b6f8228ad3076c8c49d3537df196aac
+        image: ghcr.io/ilhamzefer-sketch/ecommerce-auth:04268b4b539ec3298893d1bf9b81039dad0dd559
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8081
