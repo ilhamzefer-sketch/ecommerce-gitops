@@ -4,8 +4,8 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 AUTH_DIR="${AUTH_DIR:-/home/ilham/Desktop/ecommerce-auth}"
 IMAGE_NAME="${IMAGE_NAME:-ecommerce-auth-ecommerce-auth:latest}"
-ARGO_PORT="${ARGO_PORT:-8081}"
-APP_PORT="${APP_PORT:-8080}"
+ARGO_PORT="${ARGO_PORT:-8082}"
+APP_PORT="${APP_PORT:-8081}"
 
 need_cmd() {
   if ! command -v "$1" >/dev/null 2>&1; then
@@ -104,7 +104,7 @@ kubectl rollout status deployment/ecommerce-auth-app --timeout=180s
 
 echo "Starting port-forwards..."
 start_port_forward "argocd" "argocd" "svc/argocd-server" "${ARGO_PORT}:443"
-start_port_forward "ecommerce-auth" "default" "svc/ecommerce-auth-service" "${APP_PORT}:8080"
+start_port_forward "ecommerce-auth" "default" "svc/ecommerce-auth-service" "${APP_PORT}:8081"
 
 ARGO_PASSWORD="$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' 2>/dev/null | base64 -d || true)"
 

@@ -2,7 +2,7 @@ param(
     [string]$AuthDir = "C:\Users\Dell\Desktop\ecommerce-auth",
     [string]$ImageName = "ecommerce-auth-ecommerce-auth:latest",
     [int]$ArgoPort = 8082,
-    [int]$AppPort = 8080
+    [int]$AppPort = 8081
 )
 
 $ErrorActionPreference = "Stop"
@@ -123,7 +123,7 @@ kubectl rollout status deployment/ecommerce-auth-app --timeout=180s
 
 Write-Host "Starting port-forwards..."
 Start-PortForward -Name "argocd" -Namespace "argocd" -Service "svc/argocd-server" -Mapping "${ArgoPort}:443"
-Start-PortForward -Name "ecommerce-auth" -Namespace "default" -Service "svc/ecommerce-auth-service" -Mapping "${AppPort}:8080"
+Start-PortForward -Name "ecommerce-auth" -Namespace "default" -Service "svc/ecommerce-auth-service" -Mapping "${AppPort}:8081"
 
 $ArgoPassword = ""
 try {

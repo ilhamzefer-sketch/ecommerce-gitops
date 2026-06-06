@@ -21,7 +21,7 @@ spec:
         image: ghcr.io/ilhamzefer-sketch/ecommerce-auth:2797f90a6b6f8228ad3076c8c49d3537df196aac
         imagePullPolicy: IfNotPresent
         ports:
-        - containerPort: 8080
+        - containerPort: 8081
         env:
         - name: SPRING_PROFILES_ACTIVE
           value: "postgres"
@@ -35,17 +35,23 @@ spec:
           value: "ecommerce_auth"
         - name: SPRING_FLYWAY_CREATE_SCHEMAS
           value: "true"
+        - name: JWT_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ecommerce-jwt-secret
+              key: secret-key
+        - name: REFRESH_COOKIE_SECURE
+          value: "false"
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: ecommerce-auth-service
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: ecommerce-auth-app
   ports:
     - protocol: TCP
-      port: 8080
-      targetPort: 8080
-      nodePort: 30080
+      port: 8081
+      targetPort: 8081

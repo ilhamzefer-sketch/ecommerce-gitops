@@ -1,6 +1,6 @@
 param(
     [int]$ArgoPort = 8082,
-    [int]$AppPort = 8080,
+    [int]$GatewayPort = 8080,
     [string]$GitHubUsername = "ilhamzefer-sketch"
 )
 
@@ -60,17 +60,19 @@ function Start-PortForward {
 }
 
 function Wait-Workload {
-    Write-Host "Waiting for ecommerce-auth workload..."
+    Write-Host "Waiting for platform workloads..."
     for ($i = 0; $i -lt 150; $i++) {
-        kubectl get svc ecommerce-auth-service *> $null
-        if ($LASTEXITCODE -eq 0) {
+        $authService = kubectl get svc ecommerce-auth-service --ignore-not-found -o name
+        $gatewayService = kubectl get svc ecommerce-api-gateway-service --ignore-not-found -o name
+        if ($authService -and $gatewayService) {
             kubectl rollout status deployment/postgres-db --timeout=180s
             kubectl rollout status deployment/ecommerce-auth-app --timeout=180s
+            kubectl rollout status deployment/ecommerce-api-gateway-app --timeout=180s
             return
         }
         Start-Sleep -Seconds 2
     }
-    throw "ecommerce-auth-service was not created. Check Argo CD sync status and repository credentials."
+    throw "Platform services were not created. Check Argo CD sync status, repository credentials and container images."
 }
 
 Require-Command docker
@@ -111,14 +113,24 @@ kubectl create secret docker-registry ghcr-pull-secret `
     --docker-password=$env:GITHUB_TOKEN `
     --dry-run=client -o yaml | kubectl apply -f -
 
-Write-Host "Creating Argo CD application..."
-kubectl apply -f (Join-Path $RootDir "bootstrap\ecommerce-auth-app.yaml")
-kubectl -n argocd annotate application ecommerce-auth argocd.argoproj.io/refresh=hard --overwrite *> $null
+if (-not $env:JWT_SECRET_KEY) {
+    $env:JWT_SECRET_KEY = "v7I8Jm9N0P1Q2R3S4T5U6V7W8X9Y0Z1A2B3C4D5E6F7G8H9I0J1K2L3M4N5O6P7Q"
+    Write-Warning "JWT_SECRET_KEY is not set. Using the development-only default key."
+}
+
+Write-Host "Creating shared JWT secret..."
+kubectl create secret generic ecommerce-jwt-secret `
+    --from-literal=secret-key=$env:JWT_SECRET_KEY `
+    --dry-run=client -o yaml | kubectl apply -f -
+
+Write-Host "Creating platform Argo CD application..."
+kubectl apply -f (Join-Path $RootDir "bootstrap\ecommerce-platform.yaml")
+kubectl -n argocd annotate application ecommerce-platform argocd.argoproj.io/refresh=hard --overwrite *> $null
 Wait-Workload
 
 Write-Host "Starting LAN port-forwards..."
 Start-PortForward -Name "argocd" -Namespace "argocd" -Service "svc/argocd-server" -Mapping "${ArgoPort}:443"
-Start-PortForward -Name "ecommerce-auth" -Namespace "default" -Service "svc/ecommerce-auth-service" -Mapping "${AppPort}:8080"
+Start-PortForward -Name "ecommerce-api-gateway" -Namespace "default" -Service "svc/ecommerce-api-gateway-service" -Mapping "${GatewayPort}:8080"
 
 $ArgoPassword = ""
 try {
@@ -139,13 +151,15 @@ Write-Host "Ready."
 Write-Host "Argo CD local: https://localhost:$ArgoPort"
 if ($PcIp) {
     Write-Host "Argo CD LAN:   https://${PcIp}:$ArgoPort"
-    Write-Host "Swagger LAN:   http://${PcIp}:$AppPort/swagger-ui.html"
+    Write-Host "Gateway LAN:   http://${PcIp}:$GatewayPort"
+    Write-Host "Swagger LAN:   http://${PcIp}:$GatewayPort/swagger-ui/index.html"
 }
 Write-Host "Argo user: admin"
 if ($ArgoPassword) {
     Write-Host "Argo pass: $ArgoPassword"
 }
-Write-Host "Swagger local: http://localhost:$AppPort/swagger-ui.html"
+Write-Host "Gateway local: http://localhost:$GatewayPort"
+Write-Host "Swagger local: http://localhost:$GatewayPort/swagger-ui/index.html"
 Write-Host ""
-kubectl -n argocd get application ecommerce-auth -o wide
+kubectl -n argocd get applications -o wide
 kubectl get pods

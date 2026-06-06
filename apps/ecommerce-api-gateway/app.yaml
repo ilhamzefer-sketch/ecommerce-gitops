@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ecommerce-api-gateway-app
+  labels:
+    app: ecommerce-api-gateway-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ecommerce-api-gateway-app
+  template:
+    metadata:
+      labels:
+        app: ecommerce-api-gateway-app
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      containers:
+        - name: ecommerce-api-gateway-app
+          image: ghcr.io/ilhamzefer-sketch/ecommerce-api-gateway:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SERVER_PORT
+              value: "8080"
+            - name: AUTH_SERVICE_URL
+              value: "http://ecommerce-auth-service:8081"
+            - name: JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ecommerce-jwt-secret
+                  key: secret-key
+            - name: CORS_ALLOWED_ORIGINS
+              value: "http://localhost:3000,http://localhost:5173"
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ecommerce-api-gateway-service
+spec:
+  type: ClusterIP
+  selector:
+    app: ecommerce-api-gateway-app
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
