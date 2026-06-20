@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+
+<html class="light" lang="az"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Giriş | Mizan.az</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-tint": "#984800",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary-container": "#602b00",
+                    "inverse-on-surface": "#f0f2e5",
+                    "on-error": "#ffffff",
+                    "on-secondary-container": "#5c6463",
+                    "surface-container-highest": "#e2e4d7",
+                    "secondary": "#58605f",
+                    "on-surface": "#1a1d15",
+                    "secondary-container": "#d9e1df",
+                    "surface-variant": "#e2e4d7",
+                    "primary-container": "#f08a42",
+                    "tertiary": "#48626c",
+                    "on-secondary-fixed-variant": "#404847",
+                    "inverse-primary": "#ffb689",
+                    "on-primary-fixed": "#311300",
+                    "on-primary": "#ffffff",
+                    "tertiary-container": "#8da8b2",
+                    "on-tertiary-fixed-variant": "#304b53",
+                    "surface-vapor": "#e2e4d7",
+                    "outline": "#887367",
+                    "on-primary-fixed-variant": "#733500",
+                    "on-error-container": "#93000a",
+                    "carbon": "#434942",
+                    "secondary-fixed-dim": "#c0c8c6",
+                    "inverse-surface": "#2e3229",
+                    "on-tertiary": "#ffffff",
+                    "on-tertiary-fixed": "#021f27",
+                    "background": "#f9fbed",
+                    "secondary-fixed": "#dce4e2",
+                    "on-secondary": "#ffffff",
+                    "surface-bright": "#f9fbed",
+                    "on-background": "#1a1d15",
+                    "outline-variant": "#dbc1b3",
+                    "on-secondary-fixed": "#151d1c",
+                    "surface-container": "#edefe2",
+                    "on-tertiary-container": "#233d46",
+                    "error": "#ba1a1a",
+                    "surface-dim": "#d9dbce",
+                    "primary": "#984800",
+                    "surface-container-high": "#e7e9dc",
+                    "error-container": "#ffdad6",
+                    "primary-fixed-dim": "#ffb689",
+                    "slate": "#6a7167",
+                    "tertiary-fixed": "#cbe7f2",
+                    "surface": "#f9fbed",
+                    "sage": "#c1c5b6",
+                    "surface-container-low": "#f3f5e7",
+                    "primary-fixed": "#ffdbc8",
+                    "tertiary-fixed-dim": "#afcbd6",
+                    "on-surface-variant": "#554338"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "8px",
+                    "margin-desktop": "40px",
+                    "margin-mobile": "16px",
+                    "container-max": "1280px",
+                    "gutter": "24px"
+            },
+            "fontFamily": {
+                    "body-md": ["Plus Jakarta Sans"],
+                    "display-lg-mobile": ["Plus Jakarta Sans"],
+                    "display-lg": ["Plus Jakarta Sans"],
+                    "label-sm": ["Plus Jakarta Sans"],
+                    "body-lg": ["Plus Jakarta Sans"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "label-md": ["Plus Jakarta Sans"],
+                    "headline-sm": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f9fbed;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            height: 100vh;
+        }
+
+        .bg-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background-color: #f9fbed;
+            overflow: hidden;
+        }
+
+        .blur-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .blob-1 { width: 800px; height: 800px; background: #c1c5b6; top: -200px; left: -200px; }
+        .blob-2 { width: 700px; height: 700px; background: #e2e4d7; bottom: -150px; right: -150px; }
+        .blob-3 { width: 500px; height: 500px; background: #f3f5e7; top: 20%; right: 10%; opacity: 0.2; }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 40px 100px -20px rgba(26, 29, 21, 0.12);
+        }
+
+        .input-glass {
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(136, 115, 103, 0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .input-glass:focus {
+            background: rgba(255, 255, 255, 0.8);
+            border-color: #f08a42;
+            box-shadow: 0 0 0 4px rgba(240, 138, 66, 0.08);
+            outline: none;
+        }
+
+        .btn-apple-premium {
+            background: linear-gradient(135deg, #f08a42 0%, #e67a2e 100%);
+            box-shadow: 0 8px 24px -6px rgba(240, 138, 66, 0.4);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+        }
+
+        .btn-apple-premium:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 32px -8px rgba(240, 138, 66, 0.5);
+            filter: brightness(1.05);
+        }
+
+        .btn-apple-premium:active {
+            transform: translateY(0);
+        }
+
+        @keyframes entrance {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-entrance {
+            animation: entrance 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center relative">
+<div class="bg-canvas">
+<div class="blur-blob blob-1"></div>
+<div class="blur-blob blob-2"></div>
+<div class="blur-blob blob-3"></div>
+</div>
+<main class="w-full max-w-[440px] px-margin-mobile flex-grow flex items-center justify-center">
+<div class="glass-card w-full rounded-[40px] p-12 animate-entrance">
+<header class="flex flex-col items-center mb-12 text-center">
+<div class="mb-10 w-full flex justify-center">
+<img alt="Mizan.az Logo" class="h-16 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AP1WRLuXq27_j5Hwuq1KaH7aPzV5yZAhGi7RqCou5pWfJoHMZFaWlqT9ZmM3JaIGukP7bfaNzGC2NPqwuriim1G8Nt9CSfMcOCaD-8S7BGuy0pEJtaK8Ew3S_654YoOti7SwePRBxv2_VSdz9qZhOfqkoztNm3kyJMydS8SLFB5HgUa5UrrdkGOROW9zl4yqqCGLG6wcB3GReBCOE9HiLkoEyqqGWmFDMky45rdDYDh_7am2yE7KeV2aQ8WxcA"/>
+</div>
+<h1 class="font-headline-md text-[28px] leading-tight text-on-surface mb-3 tracking-tight">Hesabınıza daxil olun</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-[320px] leading-relaxed opacity-80">
+                    Mizan.az-da doğru seçim və etibarlı alış üçün daxil olun.
+                </p>
+</header>
+<form action="#" class="space-y-8">
+<div class="space-y-3">
+<label class="font-label-md text-label-md text-on-surface ml-1" for="username">Email və ya istifadəçi adı</label>
+<input class="input-glass w-full h-[48px] px-5 rounded-[14px] font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant/40" id="username" placeholder="nümunə@mizan.az" type="text"/>
+</div>
+<div class="space-y-3">
+<div class="flex justify-between items-center px-1">
+<label class="font-label-md text-label-md text-on-surface" for="password">Şifrə</label>
+<a class="font-label-md text-label-md text-primary hover:underline underline-offset-4 transition-all" href="#">Şifrəni unutmusunuz?</a>
+</div>
+<div class="relative">
+<input class="input-glass w-full h-[48px] px-5 pr-12 rounded-[14px] font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant/40" id="password" placeholder="••••••••" type="password"/>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant/60 hover:text-on-surface transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</div>
+</div>
+<button class="btn-apple-premium w-full h-[50px] rounded-[14px] font-label-md text-[16px] text-white mt-4" type="submit">
+                    Daxil ol
+                </button>
+</form>
+<footer class="mt-12 text-center">
+<p class="font-body-md text-body-md text-on-surface-variant">
+                    Hesabınız yoxdur? 
+                    <a class="text-primary font-semibold hover:underline decoration-primary/30 underline-offset-4 transition-all" href="#">Qeydiyyatdan keçin</a>
+</p>
+</footer>
+</div>
+</main>
+<footer class="w-full pb-10 flex justify-center space-x-8 text-on-surface-variant/60 font-label-sm text-label-sm tracking-wide">
+<a class="hover:text-on-surface transition-colors duration-200" href="#">Məxfilik siyasəti</a>
+<a class="hover:text-on-surface transition-colors duration-200" href="#">Dəstək</a>
+<a class="hover:text-on-surface transition-colors duration-200" href="#">İstifadə şərtləri</a>
+</footer>
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const blobs = document.querySelectorAll('.blur-blob');
+            
+            window.addEventListener('mousemove', (e) => {
+                const { clientX, clientY } = e;
+                const moveX = (clientX - window.innerWidth / 2) / 60;
+                const moveY = (clientY - window.innerHeight / 2) / 60;
+
+                blobs.forEach((blob, index) => {
+                    const factor = (index + 1) * 0.4;
+                    blob.style.transform = `translate(${moveX * factor}px, ${moveY * factor}px)`;
+                });
+            });
+
+            // Password visibility toggle
+            const toggleBtn = document.querySelector('button .material-symbols-outlined');
+            const passInput = document.getElementById('password');
+            if (toggleBtn && passInput) {
+                toggleBtn.parentElement.addEventListener('click', () => {
+                    const type = passInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passInput.setAttribute('type', type);
+                    toggleBtn.textContent = type === 'password' ? 'visibility' : 'visibility_off';
+                });
+            }
+        });
+    </script>
+</body></html>

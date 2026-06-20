@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+
+<html lang="az"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mizan.az - Hesabınıza daxil olun</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-bright": "#f9fbed",
+                    "tertiary-container": "#8da8b2",
+                    "carbon": "#434942",
+                    "surface-container-highest": "#e2e4d7",
+                    "on-tertiary-fixed-variant": "#304b53",
+                    "tertiary": "#48626c",
+                    "surface-dim": "#d9dbce",
+                    "secondary-fixed": "#dce4e2",
+                    "surface-vapor": "#e2e4d7",
+                    "surface-tint": "#984800",
+                    "surface-container": "#edefe2",
+                    "on-tertiary-container": "#233d46",
+                    "surface-container-low": "#f3f5e7",
+                    "on-primary": "#ffffff",
+                    "on-primary-container": "#602b00",
+                    "outline-variant": "#dbc1b3",
+                    "on-tertiary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "inverse-on-surface": "#f0f2e5",
+                    "inverse-primary": "#ffb689",
+                    "on-background": "#1a1d15",
+                    "on-tertiary-fixed": "#021f27",
+                    "primary": "#984800",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-container": "#f08a42",
+                    "on-secondary-fixed-variant": "#404847",
+                    "background": "#f9fbed",
+                    "on-secondary-container": "#5c6463",
+                    "primary-fixed-dim": "#ffb689",
+                    "on-primary-fixed": "#311300",
+                    "on-primary-fixed-variant": "#733500",
+                    "secondary-fixed-dim": "#c0c8c6",
+                    "surface": "#f9fbed",
+                    "on-surface": "#1a1d15",
+                    "sage": "#c1c5b6",
+                    "primary-fixed": "#ffdbc8",
+                    "secondary-container": "#d9e1df",
+                    "on-surface-variant": "#554338",
+                    "tertiary-fixed-dim": "#afcbd6",
+                    "error": "#ba1a1a",
+                    "error-container": "#ffdad6",
+                    "on-secondary-fixed": "#151d1c",
+                    "surface-variant": "#e2e4d7",
+                    "on-secondary": "#ffffff",
+                    "secondary": "#58605f",
+                    "inverse-surface": "#2e3229",
+                    "outline": "#887367",
+                    "tertiary-fixed": "#cbe7f2",
+                    "on-error": "#ffffff",
+                    "surface-container-high": "#e7e9dc",
+                    "slate": "#6a7167",
+                    "depth": "#192120"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "24px",
+                    "margin-mobile": "16px",
+                    "container-max": "1280px",
+                    "unit": "8px",
+                    "margin-desktop": "40px"
+            },
+            "fontFamily": {
+                    "headline-sm": ["Plus Jakarta Sans"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "label-sm": ["Plus Jakarta Sans"],
+                    "body-md": ["Plus Jakarta Sans"],
+                    "body-lg": ["Plus Jakarta Sans"],
+                    "label-md": ["Plus Jakarta Sans"],
+                    "display-lg": ["Plus Jakarta Sans"],
+                    "display-lg-mobile": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        .shadow-ambient {
+            box-shadow: 0px 4px 20px rgba(25, 33, 32, 0.05);
+        }
+        
+        .shadow-ambient-hover {
+            box-shadow: 0px 8px 30px rgba(25, 33, 32, 0.08);
+        }
+        
+        /* Loading Spinner */
+        .spinner {
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top: 2px solid #fff;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-surface-vapor min-h-screen flex flex-col justify-center items-center py-10 px-margin-mobile md:px-margin-desktop antialiased text-depth">
+<!-- Main Container -->
+<main class="w-full max-w-md bg-white rounded-xl shadow-ambient p-8 md:p-10 transition-shadow duration-300 hover:shadow-ambient-hover border border-white/50 relative overflow-hidden">
+<!-- Subtle gradient decoration -->
+<div class="absolute top-0 right-0 w-32 h-32 bg-sage/20 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
+<!-- Logo -->
+<div class="flex justify-center mb-8">
+<img alt="Mizan.az Logo" class="h-[60px] w-auto" src="data:image/png;base64,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"/>
+</div>
+<!-- Header -->
+<div class="text-center mb-8 space-y-2">
+<h1 class="font-headline-md text-headline-md text-depth">Hesabınıza daxil olun</h1>
+<p class="font-body-md text-body-md text-carbon">Mizan.az-da doğru seçim və etibarlı alış üçün davam edin.</p>
+</div>
+<!-- Login Form -->
+<form action="#" class="space-y-6" id="loginForm" method="POST">
+<!-- Email Field -->
+<div class="space-y-1">
+<label class="block font-label-md text-label-md text-depth" for="email">Email və ya istifadəçi adı</label>
+<div class="relative">
+<input class="w-full px-4 py-3 bg-white border border-sage rounded-lg font-body-md text-body-md text-depth placeholder:text-slate focus:outline-none focus:border-[#76919b] focus:ring-2 focus:ring-[#76919b]/20 transition-all duration-200" id="email" name="email" placeholder="Nümunə: user@example.com" type="text"/>
+</div>
+</div>
+<!-- Password Field -->
+<div class="space-y-1">
+<label class="block font-label-md text-label-md text-depth" for="password">Şifrə</label>
+<div class="relative">
+<input class="w-full px-4 py-3 bg-white border border-sage rounded-lg font-body-md text-body-md text-depth placeholder:text-slate focus:outline-none focus:border-[#76919b] focus:ring-2 focus:ring-[#76919b]/20 transition-all duration-200 pr-12" id="password" name="password" placeholder="Şifrənizi daxil edin" type="password"/>
+<button class="absolute inset-y-0 right-0 px-3 flex items-center text-slate hover:text-depth transition-colors" onclick="togglePassword()" type="button">
+<span class="material-symbols-outlined" data-icon="visibility" id="eyeIcon">visibility</span>
+</button>
+</div>
+</div>
+<!-- Forgot Password Link -->
+<div class="flex justify-end">
+<a class="font-label-md text-label-md text-slate hover:text-primary-container transition-colors duration-200" href="#">
+                    Şifrəni unutmusunuz?
+                </a>
+</div>
+<!-- Error Message Placeholder (Hidden by default, inline style for demo if needed, but controlled by JS class normally) -->
+<div class="hidden flex items-center gap-2 p-3 bg-error-container/50 border border-error/20 rounded-lg text-error font-label-md text-label-md" id="errorMessage">
+<span class="material-symbols-outlined text-[18px]" data-icon="error">error</span>
+<span>Email və ya şifrə yanlışdır.</span>
+</div>
+<!-- Submit Button -->
+<button class="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm font-label-md text-label-md text-white bg-primary-container hover:bg-primary transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-container active:scale-[0.98]" id="submitBtn" type="submit">
+<span id="btnText">Daxil ol</span>
+<div class="hidden spinner ml-2" id="btnSpinner"></div>
+</button>
+</form>
+<!-- Footer Links -->
+<div class="mt-8 text-center">
+<p class="font-body-md text-body-md text-carbon">
+                Hesabınız yoxdur? 
+                <a class="font-label-md text-label-md text-primary-container hover:text-primary font-semibold transition-colors duration-200" href="#">
+                    Qeydiyyatdan keçin
+                </a>
+</p>
+</div>
+</main>
+<!-- Bottom minimalist branding / copyright to anchor the page -->
+<div class="mt-12 text-center text-slate font-label-sm text-label-sm max-w-sm mx-auto">
+        © 2024 Mizan.az. Bütün hüquqlar qorunur. Təhlükəsiz və şifrələnmiş bağlantı.
+    </div>
+<script>
+        // Password Visibility Toggle
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('eyeIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.textContent = 'visibility_off';
+                eyeIcon.setAttribute('data-icon', 'visibility_off');
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.textContent = 'visibility';
+                eyeIcon.setAttribute('data-icon', 'visibility');
+            }
+        }
+
+        // Form Submit Simulation (Loading & Error states)
+        const form = document.getElementById('loginForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const btnText = document.getElementById('btnText');
+        const btnSpinner = document.getElementById('btnSpinner');
+        const errorMessage = document.getElementById('errorMessage');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Reset error state
+            errorMessage.classList.add('hidden');
+            
+            // Set loading state
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-80', 'cursor-not-allowed');
+            btnText.textContent = 'Daxil olunur...';
+            btnSpinner.classList.remove('hidden');
+
+            // Simulate API call delay
+            setTimeout(() => {
+                // Remove loading state
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-80', 'cursor-not-allowed');
+                btnText.textContent = 'Daxil ol';
+                btnSpinner.classList.add('hidden');
+                
+                // Show error state for demo purposes
+                errorMessage.classList.remove('hidden');
+                
+                // Optional: add shake animation to the form or fields
+                const inputs = document.querySelectorAll('input');
+                inputs.forEach(input => {
+                    input.classList.add('border-error/50');
+                    setTimeout(() => input.classList.remove('border-error/50'), 2000);
+                });
+                
+            }, 1500);
+        });
+    </script>
+</body></html>

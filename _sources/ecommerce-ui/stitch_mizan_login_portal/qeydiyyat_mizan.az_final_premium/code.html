@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+
+<html class="light" lang="az"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Qeydiyyat | Mizan.az</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#404847",
+                        "on-surface": "#1a1d15",
+                        "surface-tint": "#984800",
+                        "tertiary-fixed-dim": "#afcbd6",
+                        "primary-container": "#f08a42",
+                        "sage": "#c1c5b6",
+                        "surface-container-low": "#f3f5e7",
+                        "on-primary-container": "#602b00",
+                        "secondary-fixed-dim": "#c0c8c6",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed": "#311300",
+                        "surface-container-high": "#e7e9dc",
+                        "tertiary-fixed": "#cbe7f2",
+                        "tertiary-container": "#8da8b2",
+                        "surface-vapor": "#e2e4d7",
+                        "error": "#ba1a1a",
+                        "inverse-surface": "#2e3229",
+                        "on-secondary-fixed": "#151d1c",
+                        "primary-fixed-dim": "#ffb689",
+                        "primary": "#984800",
+                        "inverse-on-surface": "#f0f2e5",
+                        "background": "#f9fbed",
+                        "on-tertiary-container": "#233d46",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-container": "#5c6463",
+                        "on-tertiary-fixed": "#021f27",
+                        "on-primary": "#ffffff",
+                        "surface-container": "#edefe2",
+                        "secondary-fixed": "#dce4e2",
+                        "on-surface-variant": "#554338",
+                        "surface-variant": "#e2e4d7",
+                        "carbon": "#434942",
+                        "on-primary-fixed-variant": "#733500",
+                        "inverse-primary": "#ffb689",
+                        "secondary-container": "#d9e1df",
+                        "slate": "#6a7167",
+                        "secondary": "#58605f",
+                        "on-error": "#ffffff",
+                        "surface-dim": "#d9dbce",
+                        "on-secondary": "#ffffff",
+                        "surface-container-highest": "#e2e4d7",
+                        "outline-variant": "#dbc1b3",
+                        "error-container": "#ffdad6",
+                        "surface": "#f9fbed",
+                        "on-tertiary-fixed-variant": "#304b53",
+                        "on-background": "#1a1d15",
+                        "outline": "#887367",
+                        "surface-bright": "#f9fbed",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary": "#48626c",
+                        "primary-fixed": "#ffdbc8",
+                        "depth": "#192120"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px",
+                        "input": "14px",
+                        "card": "32px",
+                        "button": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "label-md": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #e2e4d7;
+            overflow-x: hidden;
+        }
+
+        .bg-shader {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: #e2e4d7;
+            overflow: hidden;
+        }
+
+        .glow-1 {
+            position: absolute;
+            width: 800px;
+            height: 800px;
+            top: -200px;
+            left: -100px;
+            background: radial-gradient(circle, rgba(193, 197, 182, 0.4) 0%, rgba(193, 197, 182, 0) 70%);
+            filter: blur(80px);
+            animation: drift 25s infinite alternate ease-in-out;
+        }
+
+        .glow-2 {
+            position: absolute;
+            width: 1000px;
+            height: 1000px;
+            bottom: -300px;
+            right: -200px;
+            background: radial-gradient(circle, rgba(118, 145, 155, 0.3) 0%, rgba(118, 145, 155, 0) 70%);
+            filter: blur(100px);
+            animation: drift 30s infinite alternate-reverse ease-in-out;
+        }
+
+        .glow-3 {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            top: 20%;
+            right: 15%;
+            background: radial-gradient(circle, rgba(240, 138, 66, 0.1) 0%, rgba(240, 138, 66, 0) 70%);
+            filter: blur(120px);
+            animation: pulse 15s infinite alternate ease-in-out;
+        }
+
+        @keyframes drift {
+            from { transform: translate(0, 0) scale(1); }
+            to { transform: translate(100px, 50px) scale(1.1); }
+        }
+
+        @keyframes pulse {
+            from { opacity: 0.5; transform: scale(1); }
+            to { opacity: 0.8; transform: scale(1.2); }
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.55);
+            backdrop-filter: blur(32px);
+            -webkit-backdrop-filter: blur(32px);
+            box-shadow: 0 8px 32px 0 rgba(25, 33, 32, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .input-glow:focus {
+            box-shadow: 0 0 0 4px rgba(240, 138, 66, 0.15);
+            border-color: #f08a42;
+        }
+
+        .cta-gradient {
+            background: linear-gradient(135deg, #f08a42 0%, #d47333 100%);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .cta-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(240, 138, 66, 0.3);
+        }
+
+        .cta-gradient:active {
+            transform: translateY(0);
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-6">
+<div class="bg-shader">
+<div class="glow-1"></div>
+<div class="glow-2"></div>
+<div class="glow-3"></div>
+</div>
+<main class="w-full max-w-[520px] glass-card rounded-card p-[48px] animate-in fade-in zoom-in duration-700">
+<div class="flex flex-col items-center mb-10">
+<div class="bg-white/40 p-4 rounded-full backdrop-blur-md border border-white/60 mb-6">
+<img alt="Mizan.az" class="h-12 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC90GfQXV4v4SESOtDXMWkIqrGDA95BY6s3rig-1V2Pj1YIJ1cxfeM70PnU2Jg-shUYR9D4HSKh-sifZh3XjsnJMxbZAOf4S7ihUetyvtoLA-WSk4fo-R3ooKUYuOGYaJGb8s9fwmHieK5WUMxFb9tFrZ576BfsSGOqfxsHPyUztyA5OGOckzfljKyokT1NeuOedg4oIR7jopLlPj15H9NmaHb93jYzlUYjH6YUpITHruUalC5ovp6G5Khy6Ov0ENtJ6NP04lj62A"/>
+</div>
+<h1 class="text-headline-md font-headline-md text-depth mb-3 tracking-tight">Yeni hesab yaradın</h1>
+<p class="text-body-md font-body-md text-slate text-center leading-relaxed">
+                Mizan.az-da etibarlı alış təcrübəsinə başlamaq üçün qeydiyyatdan keçin.
+            </p>
+</div>
+<form class="space-y-5" id="registration-form">
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-2">
+<label class="text-label-sm font-label-sm text-carbon px-1" for="first-name">Ad</label>
+<input class="w-full h-[48px] px-4 rounded-input bg-white/40 border border-sage outline-none input-glow transition-all duration-200 text-body-md font-body-md placeholder:text-slate/60" id="first-name" placeholder="Adınız" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="text-label-sm font-label-sm text-carbon px-1" for="last-name">Soyad</label>
+<input class="w-full h-[48px] px-4 rounded-input bg-white/40 border border-sage outline-none input-glow transition-all duration-200 text-body-md font-body-md placeholder:text-slate/60" id="last-name" placeholder="Soyadınız" type="text"/>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-label-sm font-label-sm text-carbon px-1" for="username">İstifadəçi adı</label>
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate text-[20px]">person</span>
+<input class="w-full h-[48px] pl-11 pr-4 rounded-input bg-white/40 border border-sage outline-none input-glow transition-all duration-200 text-body-md font-body-md placeholder:text-slate/60" id="username" placeholder="İstifadəçi adınız" type="text"/>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-label-sm font-label-sm text-carbon px-1" for="email">Email</label>
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate text-[20px]">mail</span>
+<input class="w-full h-[48px] pl-11 pr-4 rounded-input bg-white/40 border border-sage outline-none input-glow transition-all duration-200 text-body-md font-body-md placeholder:text-slate/60" id="email" placeholder="nümunə@mizan.az" type="email"/>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-label-sm font-label-sm text-carbon px-1" for="password">Şifrə</label>
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate text-[20px]">lock</span>
+<input class="w-full h-[48px] pl-11 pr-12 rounded-input bg-white/40 border border-sage outline-none input-glow transition-all duration-200 text-body-md font-body-md placeholder:text-slate/60" id="password" placeholder="••••••••" type="password"/>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-slate hover:text-primary transition-colors" onclick="togglePassword()" type="button">
+<span class="material-symbols-outlined text-[20px]" id="password-toggle-icon">visibility</span>
+</button>
+</div>
+</div>
+<div class="pt-4">
+<button class="w-full h-[52px] rounded-button cta-gradient text-white font-headline-sm text-headline-sm flex items-center justify-center gap-2" type="submit">
+<span>Qeydiyyatdan keç</span>
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</form>
+<div class="mt-8 pt-8 border-t border-sage/30 text-center">
+<p class="text-body-md font-body-md text-slate">
+                Artıq hesabınız var? 
+                <a class="text-primary-container font-semibold hover:underline decoration-2 underline-offset-4 ml-1" href="#">Daxil olun</a>
+</p>
+</div>
+</main>
+<footer class="fixed bottom-6 w-full text-center pointer-events-none opacity-40">
+<p class="text-label-sm font-label-sm text-depth">© 2024 Mizan.az. Bütün hüquqlar qorunur.</p>
+</footer>
+<script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('password-toggle-icon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.textContent = 'visibility_off';
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.textContent = 'visibility';
+            }
+        }
+
+        document.getElementById('registration-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button[type="submit"]');
+            const originalContent = btn.innerHTML;
+            
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin">progress_activity</span>';
+            
+            setTimeout(() => {
+                btn.innerHTML = '<span class="material-symbols-outlined">check_circle</span> <span>Uğurludur!</span>';
+                btn.classList.remove('cta-gradient');
+                btn.classList.add('bg-green-600');
+                
+                setTimeout(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = originalContent;
+                    btn.classList.add('cta-gradient');
+                    btn.classList.remove('bg-green-600');
+                }, 2000);
+            }, 1500);
+        });
+
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.closest('.space-y-2').querySelector('label')?.classList.add('text-primary');
+            });
+            input.addEventListener('blur', () => {
+                input.parentElement.closest('.space-y-2').querySelector('label')?.classList.remove('text-primary');
+            });
+        });
+    </script>
+</body></html>

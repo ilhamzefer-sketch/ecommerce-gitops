@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+
+<html class="light" lang="az"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Giriş | Mizan.az</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-tint": "#984800",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary-container": "#602b00",
+                    "inverse-on-surface": "#f0f2e5",
+                    "on-error": "#ffffff",
+                    "on-secondary-container": "#5c6463",
+                    "surface-container-highest": "#e2e4d7",
+                    "secondary": "#58605f",
+                    "on-surface": "#1a1d15",
+                    "secondary-container": "#d9e1df",
+                    "surface-variant": "#e2e4d7",
+                    "primary-container": "#f08a42",
+                    "tertiary": "#48626c",
+                    "on-secondary-fixed-variant": "#404847",
+                    "inverse-primary": "#ffb689",
+                    "on-primary-fixed": "#311300",
+                    "on-primary": "#ffffff",
+                    "tertiary-container": "#8da8b2",
+                    "on-tertiary-fixed-variant": "#304b53",
+                    "surface-vapor": "#e2e4d7",
+                    "outline": "#887367",
+                    "on-primary-fixed-variant": "#733500",
+                    "on-error-container": "#93000a",
+                    "carbon": "#434942",
+                    "secondary-fixed-dim": "#c0c8c6",
+                    "inverse-surface": "#2e3229",
+                    "on-tertiary": "#ffffff",
+                    "on-tertiary-fixed": "#021f27",
+                    "background": "#f9fbed",
+                    "secondary-fixed": "#dce4e2",
+                    "on-secondary": "#ffffff",
+                    "surface-bright": "#f9fbed",
+                    "on-background": "#1a1d15",
+                    "outline-variant": "#dbc1b3",
+                    "on-secondary-fixed": "#151d1c",
+                    "surface-container": "#edefe2",
+                    "on-tertiary-container": "#233d46",
+                    "error": "#ba1a1a",
+                    "surface-dim": "#d9dbce",
+                    "primary": "#984800",
+                    "surface-container-high": "#e7e9dc",
+                    "error-container": "#ffdad6",
+                    "primary-fixed-dim": "#ffb689",
+                    "slate": "#6a7167",
+                    "tertiary-fixed": "#cbe7f2",
+                    "surface": "#f9fbed",
+                    "sage": "#c1c5b6",
+                    "surface-container-low": "#f3f5e7",
+                    "primary-fixed": "#ffdbc8",
+                    "tertiary-fixed-dim": "#afcbd6",
+                    "on-surface-variant": "#554338"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "2xl": "14px",
+                    "3xl": "32px",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "8px",
+                    "margin-desktop": "40px",
+                    "margin-mobile": "16px",
+                    "container-max": "1280px",
+                    "gutter": "24px"
+            },
+            "fontFamily": {
+                    "body-md": ["Plus Jakarta Sans"],
+                    "display-lg-mobile": ["Plus Jakarta Sans"],
+                    "display-lg": ["Plus Jakarta Sans"],
+                    "label-sm": ["Plus Jakarta Sans"],
+                    "body-lg": ["Plus Jakarta Sans"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "label-md": ["Plus Jakarta Sans"],
+                    "headline-sm": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            background: radial-gradient(circle at center, #e2e4d7 0%, #c1c5b6 100%);
+        }
+
+        .bg-glow-top {
+            position: fixed;
+            top: -10%;
+            left: -10%;
+            width: 50%;
+            height: 50%;
+            background: radial-gradient(circle, rgba(193, 197, 182, 0.4) 0%, transparent 70%);
+            filter: blur(80px);
+            z-index: 0;
+        }
+
+        .bg-glow-bottom {
+            position: fixed;
+            bottom: -10%;
+            right: -10%;
+            width: 50%;
+            height: 50%;
+            background: radial-gradient(circle, rgba(226, 228, 215, 0.5) 0%, transparent 70%);
+            filter: blur(80px);
+            z-index: 0;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.12);
+        }
+
+        .input-glass {
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid #c1c5b6;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .input-glass:focus {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: #f08a42;
+            box-shadow: 0 0 0 4px rgba(240, 138, 66, 0.15);
+            outline: none;
+        }
+
+        .btn-primary-gradient {
+            background: linear-gradient(135deg, #f08a42 0%, #e67a2e 100%);
+            box-shadow: 0 8px 24px -6px rgba(240, 138, 66, 0.4);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .btn-primary-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px -8px rgba(240, 138, 66, 0.6);
+            filter: brightness(1.05);
+        }
+
+        .btn-primary-gradient:active {
+            transform: translateY(0);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center relative bg-[#f9fbed]">
+<div class="bg-glow-top"></div>
+<div class="bg-glow-bottom"></div>
+<main class="w-full max-w-[460px] animate-fade-in z-10 px-6">
+<div class="glass-card rounded-[32px] p-10 md:p-12">
+<header class="flex flex-col items-center mb-10 text-center">
+<div class="mb-8 w-[140px]">
+<img alt="Mizan.az Logo" class="w-full h-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_C8pX6Cq8KQ8Uv2udqPgndVzXx7zLaKUWJuk5mwzWQQjKcRaXDCTxCa7LlpzxPsMI1Ol-WttG3LmXNirx1Xks2sceektTEfdN_OrzBNnX6Zx13-aj9UF1WQIcPAQUYOtL9_8UZN8moAURJOT7Eh3tmcV8cyKtFr2Fp3PAIxAy0Rp_GbdOybW6IDTJ7pntlzPcrOa6CIUN6zrkg-Rou0GtBjyKRU-yI6VWFx3lQliX6JpjLgwCUb5G849eFNqnD4OHElCy8CX0yA"/>
+</div>
+<h1 class="font-headline-md text-[26px] font-bold text-[#192120] mb-3 tracking-tight">Hesabınıza daxil olun</h1>
+<p class="font-body-md text-[15px] text-[#434942] opacity-80 leading-relaxed max-w-[280px]">
+                    Mizan.az-da doğru seçim və etibarlı alış üçün daxil olun.
+                </p>
+</header>
+<form action="#" class="space-y-6">
+<div class="space-y-2">
+<label class="font-label-md text-label-md text-[#192120] block pl-1 opacity-90" for="username">Email və ya istifadəçi adı</label>
+<input class="input-glass w-full h-[48px] px-5 rounded-2xl font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant/30" id="username" placeholder="Email və ya istifadəçi adınızı daxil edin" type="text"/>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between items-center pl-1">
+<label class="font-label-md text-label-md text-[#192120] opacity-90" for="password">Şifrə</label>
+<a class="font-label-md text-[13px] text-primary hover:opacity-70 transition-opacity" href="#">Şifrəni unutmusunuz?</a>
+</div>
+<div class="relative group">
+<input class="input-glass w-full h-[48px] px-5 pr-12 rounded-2xl font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant/30" id="password" placeholder="Şifrənizi daxil edin" type="password"/>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant/40 hover:text-on-surface transition-colors focus:outline-none" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</div>
+</div>
+<button class="btn-primary-gradient w-full h-[50px] rounded-2xl font-label-md text-[15px] font-bold text-white mt-4" type="submit">
+                    Daxil ol
+                </button>
+</form>
+<footer class="mt-10 text-center">
+<p class="font-body-md text-[14px] text-[#434942]">
+                    Hesabınız yoxdur? 
+                    <a class="text-primary font-bold hover:underline decoration-primary/30 underline-offset-4 transition-all ml-1" href="#">Qeydiyyatdan keçin</a>
+</p>
+</footer>
+</div>
+</main>
+<div class="fixed bottom-12 left-0 right-0 flex justify-center space-x-8 text-[#434942]/50 font-label-md text-[13px] z-10">
+<a class="hover:text-primary transition-colors duration-300" href="#">Məxfilik siyasəti</a>
+<a class="hover:text-primary transition-colors duration-300" href="#">Dəstək</a>
+<a class="hover:text-primary transition-colors duration-300" href="#">İstifadə şərtləri</a>
+</div>
+<script>
+        // Password visibility toggle
+        document.addEventListener('DOMContentLoaded', () => {
+            const togglePassBtn = document.querySelector('button span.material-symbols-outlined').parentElement;
+            const passInput = document.getElementById('password');
+            if (togglePassBtn && passInput) {
+                togglePassBtn.addEventListener('click', () => {
+                    const type = passInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passInput.setAttribute('type', type);
+                    togglePassBtn.querySelector('span').textContent = type === 'password' ? 'visibility' : 'visibility_off';
+                });
+            }
+        });
+    </script>
+</body></html>

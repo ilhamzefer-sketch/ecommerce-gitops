@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+
+<html class="light" lang="az"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Email Təsdiqlənməsi - Mizan.az</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary": "#984800",
+                    "surface": "#f9fbed",
+                    "surface-bright": "#f9fbed",
+                    "surface-container-low": "#f3f5e7",
+                    "on-tertiary-container": "#233d46",
+                    "background": "#f9fbed",
+                    "on-background": "#1a1d15",
+                    "primary-fixed-dim": "#ffb689",
+                    "surface-container": "#edefe2",
+                    "secondary-container": "#d9e1df",
+                    "on-primary-fixed": "#311300",
+                    "tertiary-fixed-dim": "#afcbd6",
+                    "surface-vapor": "#e2e4d7",
+                    "on-secondary-container": "#5c6463",
+                    "tertiary": "#48626c",
+                    "carbon": "#434942",
+                    "on-tertiary-fixed": "#021f27",
+                    "on-primary-container": "#602b00",
+                    "inverse-surface": "#2e3229",
+                    "secondary-fixed": "#dce4e2",
+                    "on-error-container": "#93000a",
+                    "surface-dim": "#d9dbce",
+                    "inverse-primary": "#ffb689",
+                    "on-secondary-fixed-variant": "#404847",
+                    "on-tertiary": "#ffffff",
+                    "on-surface-variant": "#554338",
+                    "error-container": "#ffdad6",
+                    "sage": "#c1c5b6",
+                    "tertiary-container": "#8da8b2",
+                    "on-primary-fixed-variant": "#733500",
+                    "outline": "#887367",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary": "#58605f",
+                    "outline-variant": "#dbc1b3",
+                    "primary-container": "#f08a42",
+                    "surface-container-highest": "#e2e4d7",
+                    "surface-variant": "#e2e4d7",
+                    "surface-container-high": "#e7e9dc",
+                    "on-secondary": "#ffffff",
+                    "on-secondary-fixed": "#151d1c",
+                    "primary-fixed": "#ffdbc8",
+                    "on-primary": "#ffffff",
+                    "tertiary-fixed": "#cbe7f2",
+                    "slate": "#6a7167",
+                    "error": "#ba1a1a",
+                    "on-error": "#ffffff",
+                    "on-surface": "#1a1d15",
+                    "inverse-on-surface": "#f0f2e5",
+                    "secondary-fixed-dim": "#c0c8c6",
+                    "surface-tint": "#984800",
+                    "on-tertiary-fixed-variant": "#304b53"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "8px",
+                    "gutter": "24px",
+                    "container-max": "1280px",
+                    "margin-mobile": "16px",
+                    "margin-desktop": "40px"
+            },
+            "fontFamily": {
+                    "body-md": ["Plus Jakarta Sans"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "headline-sm": ["Plus Jakarta Sans"],
+                    "display-lg": ["Plus Jakarta Sans"],
+                    "display-lg-mobile": ["Plus Jakarta Sans"],
+                    "label-md": ["Plus Jakarta Sans"],
+                    "label-sm": ["Plus Jakarta Sans"],
+                    "body-lg": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f9fbed;
+            overflow: hidden;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(193, 197, 182, 0.3);
+            box-shadow: 0 10px 40px -10px rgba(25, 33, 32, 0.08);
+        }
+
+        .bg-gradient-mesh {
+            background: radial-gradient(at 0% 0%, #e2e4d7 0%, transparent 50%),
+                        radial-gradient(at 100% 0%, #f3f5e7 0%, transparent 50%),
+                        radial-gradient(at 100% 100%, #c1c5b6 0%, transparent 50%),
+                        radial-gradient(at 0% 100%, #e7e9dc 0%, transparent 50%);
+            background-size: 200% 200%;
+            animation: mesh-move 15s ease infinite;
+        }
+
+        @keyframes mesh-move {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+            100% { background-position: 0% 0%; }
+        }
+
+        .fade-enter {
+            animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .spinner {
+            border: 3px solid rgba(152, 72, 0, 0.1);
+            border-top: 3px solid #984800;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center relative p-margin-mobile">
+<!-- Background Layer -->
+<div class="fixed inset-0 bg-gradient-mesh -z-10"></div>
+<div class="fixed inset-0 bg-surface/30 backdrop-blur-3xl -z-10"></div>
+<!-- Main Container -->
+<div class="w-full max-w-[440px] glass-card rounded-[32px] p-8 md:p-12 text-center fade-enter">
+<!-- Logo Section -->
+<div class="flex justify-center mb-10">
+<img alt="Mizan.az" class="w-16 h-16 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDpIDs8vVMJesAejIRzLjiOQbtKmWeH2KuWTH_ggBhspDzFniqkd72YdjhHCGdIa9KeRKLsEJR-zzzbhe4pK_q_BFEhv4cpvh2d_cTr6xDvn7CTsWpg2k07JTfr81wl7zFYMnZtX_dAqKR0MTlPg1q-Mi42z12PXSJTR040IqZNTIuOAGujYacuv3eUp76xsjfR8xc-CA0SpPOffJL25ZrB9Lgu5G8ffKZxz6NBF3Suubhp3fRy7Xt6mDPNDtQnKxAGpYmV5CFMwg"/>
+</div>
+<!-- Dynamic Content Area -->
+<div id="status-container">
+<!-- Success State (Default View) -->
+<div class="flex flex-col items-center" id="state-success">
+<div class="w-16 h-16 rounded-full bg-surface-container-high flex items-center justify-center mb-6 text-tertiary">
+<span class="material-symbols-outlined text-[32px]" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+</div>
+<h1 class="font-headline-md text-headline-md text-on-surface mb-3">Email təsdiqləndi</h1>
+<p class="font-body-md text-body-md text-slate mb-10">
+                    Hesabınız aktivləşdirildi. İndi Mizan.az hesabınıza daxil ola bilərsiniz.
+                </p>
+<button class="w-full py-4 bg-primary text-on-primary font-label-md text-label-md rounded-xl shadow-[0_4px_16px_rgba(152,72,0,0.2)] hover:opacity-90 transition-all active:scale-[0.98]">
+                    Daxil ol
+                </button>
+</div>
+<!-- Loading State (Hidden) -->
+<div class="hidden flex flex-col items-center" id="state-loading">
+<div class="mb-6">
+<div class="spinner"></div>
+</div>
+<h1 class="font-headline-md text-headline-md text-on-surface mb-3">Email təsdiqlənir</h1>
+<p class="font-body-md text-body-md text-slate">
+                    Xahiş edirik, bir neçə saniyə gözləyin...
+                </p>
+</div>
+<!-- Failed State (Hidden) -->
+<div class="hidden flex flex-col items-center" id="state-failed">
+<div class="w-16 h-16 rounded-full bg-error-container/20 flex items-center justify-center mb-6 text-on-error-container">
+<span class="material-symbols-outlined text-[32px]" style="font-variation-settings: 'FILL' 1;">error</span>
+</div>
+<h1 class="font-headline-md text-headline-md text-on-surface mb-3">Link etibarsızdır</h1>
+<p class="font-body-md text-body-md text-slate mb-10">
+                    Təəssüf ki, təsdiq linkinin vaxtı bitib və ya artıq istifadə olunub.
+                </p>
+<button class="w-full py-4 border border-sage bg-transparent text-on-surface font-label-md text-label-md rounded-xl hover:bg-surface-container-low transition-all active:scale-[0.98]">
+                    Yenidən göndər
+                </button>
+</div>
+</div>
+<!-- Footer / Helper -->
+<div class="mt-12 pt-8 border-t border-sage/30">
+<p class="font-label-sm text-label-sm text-slate uppercase tracking-wider mb-4">Demo üçün Keçidlər</p>
+<div class="flex justify-center gap-4">
+<button class="text-label-sm font-label-sm text-primary underline" onclick="showState('loading')">Loading</button>
+<button class="text-label-sm font-label-sm text-primary underline" onclick="showState('success')">Success</button>
+<button class="text-label-sm font-label-sm text-primary underline" onclick="showState('failed')">Failed</button>
+</div>
+</div>
+</div>
+<!-- Small UI Accents -->
+<div class="absolute bottom-8 text-slate font-label-sm text-label-sm opacity-60">
+        © 2024 Mizan.az • Təhlükəsizlik Sistemi
+    </div>
+<script>
+        function showState(state) {
+            const states = ['success', 'loading', 'failed'];
+            states.forEach(s => {
+                document.getElementById('state-' + s).classList.add('hidden');
+            });
+            
+            const target = document.getElementById('state-' + state);
+            target.classList.remove('hidden');
+            
+            // Re-trigger animation
+            target.parentElement.classList.remove('fade-enter');
+            void target.offsetWidth; // Force reflow
+            target.parentElement.classList.add('fade-enter');
+        }
+
+        // Logic for state transitions would normally go here
+        // e.g. setTimeout(() => showState('success'), 2000);
+    </script>
+</body></html>

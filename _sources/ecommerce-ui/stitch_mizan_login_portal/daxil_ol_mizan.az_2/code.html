@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+
+<html lang="az"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mizan.az - Daxil ol</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "inverse-on-surface": "#f0f2e5",
+                        "tertiary-fixed": "#cbe7f2",
+                        "on-error-container": "#93000a",
+                        "tertiary-container": "#06232b",
+                        "primary-fixed-dim": "#c0c8c6",
+                        "on-surface-variant": "#434847",
+                        "outline-variant": "#c3c7c6",
+                        "on-primary": "#ffffff",
+                        "primary": "#030808",
+                        "on-tertiary-container": "#708b95",
+                        "on-tertiary-fixed": "#021f27",
+                        "primary-fixed": "#dce4e2",
+                        "surface-container-high": "#e7e9dc",
+                        "surface-container-low": "#f3f5e7",
+                        "surface-container": "#edefe2",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed": "#311300",
+                        "tertiary": "#00090d",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#58605f",
+                        "tertiary-fixed-dim": "#afcbd6",
+                        "surface": "#f9fbed",
+                        "on-primary-fixed-variant": "#404847",
+                        "secondary": "#984800",
+                        "surface-container-highest": "#e2e4d7",
+                        "on-primary-fixed": "#151d1c",
+                        "surface-dim": "#d9dbce",
+                        "secondary-fixed": "#ffdbc8",
+                        "on-secondary-container": "#6e3200",
+                        "inverse-surface": "#2e3229",
+                        "on-secondary": "#ffffff",
+                        "primary-container": "#192120",
+                        "on-tertiary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed-variant": "#733500",
+                        "on-primary-container": "#808987",
+                        "background": "#f9fbed",
+                        "on-tertiary-fixed-variant": "#304b53",
+                        "outline": "#737877",
+                        "inverse-primary": "#c0c8c6",
+                        "on-error": "#ffffff",
+                        "on-surface": "#1a1d15",
+                        "secondary-fixed-dim": "#ffb689",
+                        "on-background": "#1a1d15",
+                        "surface-bright": "#f9fbed",
+                        "surface-variant": "#e2e4d7",
+                        "secondary-container": "#ff964d"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "margin-desktop": "64px",
+                        "md": "24px",
+                        "base": "8px",
+                        "sm": "12px",
+                        "lg": "48px",
+                        "xs": "4px",
+                        "xl": "80px",
+                        "gutter": "24px",
+                        "margin-mobile": "20px"
+                    },
+                    fontFamily: {
+                        "label-lg": ["Plus Jakarta Sans"],
+                        "display-lg-mobile": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "caption": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "label-md": ["Plus Jakarta Sans"],
+                        "body-sm": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "headline-xl": ["Plus Jakarta Sans"]
+                    },
+                    fontSize: {
+                        "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "display-lg-mobile": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "caption": ["11px", { "lineHeight": "14px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-xl": ["32px", { "lineHeight": "40px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(226, 228, 215, 0.4); /* surface-variant base approximation */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 20px 40px rgba(25, 33, 32, 0.08);
+            border: 1px solid rgba(195, 199, 198, 0.5); /* outline-variant */
+        }
+        
+        .custom-input {
+            background-color: rgba(192, 200, 198, 0.2); /* primary-fixed-dim / Sage approx */
+            border: none;
+            border-bottom: 2px solid #6a7167; /* Using inline to strictly match style guide request for this specific element if token isn't exact, but mapping to on-surface-variant is better. Let's use tailwind classes below */
+        }
+    </style>
+</head>
+<body class="bg-background min-h-screen flex items-center justify-center p-margin-mobile md:p-margin-desktop relative overflow-hidden font-body-md text-primary-container">
+<!-- Ambient Background Blobs for Depth -->
+<div class="absolute top-0 left-0 w-[500px] h-[500px] bg-on-tertiary-container/10 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
+<div class="absolute bottom-0 right-0 w-[600px] h-[600px] bg-primary-fixed-dim/20 rounded-full blur-[120px] translate-x-1/3 translate-y-1/3 pointer-events-none"></div>
+<!-- Main Login Container -->
+<main class="glass-panel w-full max-w-[440px] rounded-[24px] p-8 md:p-10 relative z-10 flex flex-col items-center">
+<!-- Logo -->
+<div class="mb-lg w-full flex justify-center">
+<img alt="Mizan.az Logo" class="h-16 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdl9IqVmFA9wviYhvrCNTXd_a-vtXRpr0aiqFKU6mRsDiwP7a_BzXZmS_75eIkPYu8I6rt_tb2opT8HPSuBnIaU9PyMQ_wHH2iGOVP0U25sWsB6UA1V1xumufkM8fssIcltQJo0g6drpBHLAvzZicZlkbUJCCHLUPUKPRpGsm2_Bu2oz0jXtNTTWC6hKV63chdMf5_O18ZB3tBwc0kBujiWF0ErnWVjtgDemos7_WiMJ_T336ZXuVTAYrp5nf2mskvvG_CNPBxkg"/>
+</div>
+<!-- Header -->
+<div class="text-center mb-xl w-full">
+<h1 class="font-headline-xl text-headline-xl text-primary-container mb-sm">Hesabınıza daxil olun</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Mizan.az-da doğru seçim və etibarlı alış üçün daxil olun.</p>
+</div>
+<!-- Form -->
+<form action="#" class="w-full flex flex-col gap-md" method="POST">
+<!-- Email / Username Input -->
+<div class="flex flex-col gap-xs relative">
+<label class="font-label-md text-label-md text-on-surface-variant ml-1" for="email">Email və ya istifadəçi adı</label>
+<input class="w-full bg-primary-fixed-dim/20 border-0 border-b-2 border-on-surface-variant focus:border-secondary-container focus:ring-0 rounded-t-lg px-4 py-3 font-body-md text-primary-container placeholder-on-surface-variant/50 transition-colors" id="email" name="email" placeholder="Email və ya istifadəçi adınızı daxil edin" type="text"/>
+</div>
+<!-- Password Input -->
+<div class="flex flex-col gap-xs relative">
+<label class="font-label-md text-label-md text-on-surface-variant ml-1" for="password">Şifrə</label>
+<div class="relative">
+<input class="w-full bg-primary-fixed-dim/20 border-0 border-b-2 border-on-surface-variant focus:border-secondary-container focus:ring-0 rounded-t-lg px-4 py-3 pr-12 font-body-md text-primary-container placeholder-on-surface-variant/50 transition-colors" id="password" name="password" placeholder="Şifrənizi daxil edin" type="password"/>
+<button aria-label="Toggle password visibility" class="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-primary-container transition-colors focus:outline-none" id="togglePassword" type="button">
+<span class="material-symbols-outlined" id="visibilityIcon">visibility_off</span>
+</button>
+</div>
+<!-- Forgot Password Link -->
+<div class="flex justify-end mt-2">
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-secondary-container transition-colors" href="#">Şifrəni unutmusunuz?</a>
+</div>
+</div>
+<!-- Submit Button -->
+<button class="w-full bg-secondary-container text-on-primary font-label-lg text-label-lg py-4 rounded-lg mt-sm hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-secondary-container focus:ring-offset-2 focus:ring-offset-background" type="submit">
+                Daxil ol
+            </button>
+</form>
+<!-- Footer / Sign Up Link -->
+<div class="mt-lg text-center font-body-sm text-body-sm text-on-surface-variant">
+<span>Hesabınız yoxdur?</span>
+<a class="font-label-lg text-label-lg text-primary-container ml-1 hover:text-secondary-container transition-colors" href="#">Qeydiyyatdan keçin</a>
+</div>
+</main>
+<script>
+        // Password Visibility Toggle Logic
+        const togglePasswordBtn = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+        const visibilityIcon = document.getElementById('visibilityIcon');
+
+        togglePasswordBtn.addEventListener('click', function () {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            // Toggle icon
+            if (type === 'password') {
+                visibilityIcon.textContent = 'visibility_off';
+            } else {
+                visibilityIcon.textContent = 'visibility';
+            }
+        });
+    </script>
+</body></html>

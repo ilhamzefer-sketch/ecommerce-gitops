@@ -1,0 +1,15 @@
+.\scripts\start-docker-desktop.ps1
+
+user: admin
+pass: 1dwyav4aKJ8x-QY6
+
+user: admin
+password: admin
+
+Linkler:
+Argo CD local: https://localhost:8082
+Swagger local: http://localhost:18080/swagger-ui/index.html
+Grafana local: http://localhost:30300
+
+
+
