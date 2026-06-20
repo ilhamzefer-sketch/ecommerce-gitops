@@ -20,7 +20,13 @@ data:
         metrics_path: /actuator/prometheus
         static_configs:
           - targets:
-              - ecommerce-auth-service:8080
+              - ecommerce-auth-service:8081
+
+      - job_name: ecommerce-api-gateway
+        metrics_path: /actuator/prometheus
+        static_configs:
+          - targets:
+              - ecommerce-api-gateway-service:8080
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -30,6 +36,7 @@ metadata:
     app: prometheus
 spec:
   replicas: 1
+  revisionHistoryLimit: 2
   selector:
     matchLabels:
       app: prometheus

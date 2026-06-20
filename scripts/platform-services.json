@@ -1,6 +1,17 @@
 [
   {
+    "name": "ecommerce-infra",
+    "kind": "infrastructure",
+    "argoApplication": "ecommerce-infra",
+    "deployments": [
+      "postgres-db",
+      "prometheus",
+      "grafana"
+    ]
+  },
+  {
     "name": "ecommerce-auth",
+    "kind": "service",
     "repo": "https://github.com/ilhamzefer-sketch/ecommerce-auth.git",
     "argoApplication": "ecommerce-auth",
     "deployment": "ecommerce-auth-app",
@@ -11,6 +22,7 @@
   },
   {
     "name": "ecommerce-api-gateway",
+    "kind": "service",
     "repo": "https://github.com/ilhamzefer-sketch/ecommerce-api-gateway.git",
     "argoApplication": "ecommerce-api-gateway",
     "deployment": "ecommerce-api-gateway-app",
@@ -21,6 +33,7 @@
   },
   {
     "name": "ecommerce-ui",
+    "kind": "service",
     "repo": "https://github.com/ilhamzefer-sketch/ecommerce-ui.git",
     "argoApplication": "ecommerce-ui",
     "deployment": "ecommerce-ui-app",

@@ -102,7 +102,7 @@ function Start-PortForward {
     )
 
     Get-CimInstance Win32_Process |
-        Where-Object { $_.CommandLine -like "*kubectl*port-forward*$Service*$Mapping*" } |
+        Where-Object { $_.CommandLine -like "*kubectl*port-forward*" -and ($_.CommandLine -like "*$Service*" -or $_.CommandLine -like "*$Mapping*") } |
         ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }
 
     $OutLogFile = Join-Path $env:TEMP "$Name-port-forward.out.log"
@@ -127,6 +127,20 @@ function Wait-Deployment {
         Start-Sleep -Seconds 2
     }
     throw "$Deployment was not created. Check Argo CD sync status."
+}
+
+function Get-ServiceDeployments {
+    param([object]$Service)
+
+    if ($Service.deployments) {
+        return @($Service.deployments)
+    }
+
+    if ($Service.deployment) {
+        return @($Service.deployment)
+    }
+
+    return @()
 }
 
 function Get-DeploymentImage {
@@ -246,20 +260,28 @@ kubectl apply -f (Join-Path $RootDir "bootstrap\ecommerce-platform.yaml")
 kubectl -n argocd annotate application ecommerce-platform argocd.argoproj.io/refresh=hard --overwrite *> $null
 
 foreach ($Service in $Services) {
-    Wait-Deployment -Deployment $Service.deployment
-    $Image = Get-DeploymentImage -Deployment $Service.deployment
-    Pull-Image -Image $Image
+    foreach ($Deployment in (Get-ServiceDeployments -Service $Service)) {
+        Wait-Deployment -Deployment $Deployment
+        $Image = Get-DeploymentImage -Deployment $Deployment
+        Pull-Image -Image $Image
+    }
 }
 
 foreach ($Service in $Services) {
-    Write-Host "Restarting $($Service.deployment)..."
-    kubectl rollout restart "deployment/$($Service.deployment)"
-    kubectl rollout status "deployment/$($Service.deployment)" --timeout=180s
+    foreach ($Deployment in (Get-ServiceDeployments -Service $Service)) {
+        Write-Host "Restarting $Deployment..."
+        kubectl rollout restart "deployment/$Deployment"
+        kubectl rollout status "deployment/$Deployment" --timeout=180s
+    }
 }
 
 Write-Host "Starting LAN port-forwards..."
 Start-PortForward -Name "argocd" -Namespace "argocd" -Service "svc/argocd-server" -Mapping "${ArgoPort}:443"
 foreach ($Service in $Services) {
+    if (-not $Service.service) {
+        continue
+    }
+
     Start-PortForward `
         -Name $Service.name `
         -Namespace "default" `
@@ -292,6 +314,10 @@ if ($ArgoPassword) {
     Write-Host "Argo pass: $ArgoPassword"
 }
 foreach ($Service in $Services) {
+    if (-not $Service.localPort) {
+        continue
+    }
+
     $Path = $Service.urlPath
     if (-not $Path) {
         $Path = "/"
