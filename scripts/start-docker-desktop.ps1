@@ -169,7 +169,7 @@ function Set-DefaultImagePullSecret {
 function Ensure-JwtSecret {
     $JwtSecret = $env:JWT_SECRET_KEY
     if (-not $JwtSecret) {
-        $JwtSecret = "local-dev-jwt-secret-change-me-32-characters-minimum"
+        $JwtSecret = "v7I8Jm9N0P1Q2R3S4T5U6V7W8X9Y0Z1A2B3C4D5E6F7G8H9I0J1K2L3M4N5O6P7Q"
     }
 
     kubectl create secret generic ecommerce-jwt-secret `
