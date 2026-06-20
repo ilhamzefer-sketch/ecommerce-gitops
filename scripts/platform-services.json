@@ -15,7 +15,7 @@
     "argoApplication": "ecommerce-api-gateway",
     "deployment": "ecommerce-api-gateway-app",
     "service": "ecommerce-api-gateway-service",
-    "localPort": 8080,
+    "localPort": 18081,
     "servicePort": 8080,
     "urlPath": "/swagger-ui/index.html"
   },
