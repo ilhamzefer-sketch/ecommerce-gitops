@@ -6,6 +6,7 @@ metadata:
     app: ecommerce-ui-app
 spec:
   replicas: 1
+  revisionHistoryLimit: 2
   selector:
     matchLabels:
       app: ecommerce-ui-app
