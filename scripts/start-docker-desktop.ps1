@@ -1,16 +1,51 @@
 param(
     [int]$ArgoPort = 8082,
-    [int]$GatewayPort = 8080,
-    [string]$GitHubUsername = "ilhamzefer-sketch"
+    [string]$GitHubUsername = "ilhamzefer-sketch",
+    [string]$SourcesDir = ""
 )
 
 $ErrorActionPreference = "Stop"
 $RootDir = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
+$EnvFile = Join-Path $RootDir "scripts\.env"
+$ServicesFile = Join-Path $RootDir "scripts\platform-services.json"
+if (-not $SourcesDir) {
+    $SourcesDir = Join-Path $RootDir "_sources"
+}
 
 function Require-Command {
     param([string]$Name)
     if (-not (Get-Command $Name -ErrorAction SilentlyContinue)) {
         throw "Missing command: $Name"
+    }
+}
+
+function Import-EnvFile {
+    param([string]$Path)
+
+    if (-not (Test-Path $Path)) {
+        return
+    }
+
+    Get-Content -Path $Path | ForEach-Object {
+        $Line = $_.Trim()
+        if (-not $Line -or $Line.StartsWith("#")) {
+            return
+        }
+
+        $Parts = $Line -split "=", 2
+        if ($Parts.Count -ne 2) {
+            return
+        }
+
+        $Name = $Parts[0].Trim()
+        $Value = $Parts[1].Trim()
+        if (($Value.StartsWith('"') -and $Value.EndsWith('"')) -or ($Value.StartsWith("'") -and $Value.EndsWith("'"))) {
+            $Value = $Value.Substring(1, $Value.Length - 2)
+        }
+
+        if ($Name) {
+            [Environment]::SetEnvironmentVariable($Name, $Value, "Process")
+        }
     }
 }
 
@@ -38,6 +73,26 @@ function Wait-Kubernetes {
     throw "Kubernetes is not ready. Enable Docker Desktop > Settings > Kubernetes."
 }
 
+function Update-SourceRepositories {
+    param([array]$Services)
+
+    New-Item -ItemType Directory -Force -Path $SourcesDir | Out-Null
+    foreach ($Service in $Services) {
+        if (-not $Service.repo) {
+            continue
+        }
+
+        $Target = Join-Path $SourcesDir $Service.name
+        if (Test-Path (Join-Path $Target ".git")) {
+            Write-Host "Pulling source repo: $($Service.name)"
+            git -C $Target pull --ff-only
+        } else {
+            Write-Host "Cloning source repo: $($Service.name)"
+            git clone $Service.repo $Target
+        }
+    }
+}
+
 function Start-PortForward {
     param(
         [string]$Name,
@@ -50,37 +105,99 @@ function Start-PortForward {
         Where-Object { $_.CommandLine -like "*kubectl*port-forward*$Service*$Mapping*" } |
         ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }
 
-    $LogFile = Join-Path $env:TEMP "$Name-port-forward.log"
+    $OutLogFile = Join-Path $env:TEMP "$Name-port-forward.out.log"
+    $ErrLogFile = Join-Path $env:TEMP "$Name-port-forward.err.log"
     Start-Process -FilePath "kubectl" `
         -ArgumentList @("-n", $Namespace, "port-forward", "--address", "0.0.0.0", $Service, $Mapping) `
-        -RedirectStandardOutput $LogFile `
-        -RedirectStandardError $LogFile `
+        -RedirectStandardOutput $OutLogFile `
+        -RedirectStandardError $ErrLogFile `
         -WindowStyle Hidden
     Start-Sleep -Seconds 2
 }
 
-function Wait-Workload {
-    Write-Host "Waiting for platform workloads..."
+function Wait-Deployment {
+    param([string]$Deployment)
+
+    Write-Host "Waiting for deployment: $Deployment"
     for ($i = 0; $i -lt 150; $i++) {
-        $authService = kubectl get svc ecommerce-auth-service --ignore-not-found -o name
-        $gatewayService = kubectl get svc ecommerce-api-gateway-service --ignore-not-found -o name
-        if ($authService -and $gatewayService) {
-            kubectl rollout status deployment/postgres-db --timeout=180s
-            kubectl rollout status deployment/ecommerce-auth-app --timeout=180s
-            kubectl rollout status deployment/ecommerce-api-gateway-app --timeout=180s
+        $Name = kubectl get deployment $Deployment --ignore-not-found -o name
+        if ($LASTEXITCODE -eq 0 -and $Name) {
             return
         }
         Start-Sleep -Seconds 2
     }
-    throw "Platform services were not created. Check Argo CD sync status, repository credentials and container images."
+    throw "$Deployment was not created. Check Argo CD sync status."
+}
+
+function Get-DeploymentImage {
+    param([string]$Deployment)
+    return kubectl get deployment $Deployment -o jsonpath="{.spec.template.spec.containers[0].image}"
+}
+
+function Pull-Image {
+    param([string]$Image)
+
+    if (-not $Image -or $Image -notlike "ghcr.io/*") {
+        return
+    }
+
+    Write-Host "Pulling image: $Image"
+    docker pull $Image
+    if ($LASTEXITCODE -ne 0) {
+        throw "Failed to pull $Image. Check that scripts\.env GITHUB_TOKEN can read this GHCR package."
+    }
+}
+
+function Set-DefaultImagePullSecret {
+    $Patch = @{
+        imagePullSecrets = @(
+            @{
+                name = "ghcr-pull-secret"
+            }
+        )
+    } | ConvertTo-Json -Compress
+
+    $PatchFile = New-TemporaryFile
+    try {
+        Set-Content -Path $PatchFile -Value $Patch -NoNewline
+        kubectl patch serviceaccount default -n default --type=merge --patch-file $PatchFile | Out-Null
+    } finally {
+        Remove-Item -LiteralPath $PatchFile -Force -ErrorAction SilentlyContinue
+    }
+}
+
+function Ensure-JwtSecret {
+    $JwtSecret = $env:JWT_SECRET_KEY
+    if (-not $JwtSecret) {
+        $JwtSecret = "local-dev-jwt-secret-change-me-32-characters-minimum"
+    }
+
+    kubectl create secret generic ecommerce-jwt-secret `
+        -n default `
+        --from-literal=secret-key=$JwtSecret `
+        --dry-run=client -o yaml | kubectl apply -f -
 }
 
 Require-Command docker
 Require-Command kubectl
+Require-Command git
+
+Import-EnvFile -Path $EnvFile
+
+if (-not (Test-Path $ServicesFile)) {
+    throw "Missing services config: $ServicesFile"
+}
+$Services = Get-Content -Path $ServicesFile -Raw | ConvertFrom-Json
 
 if (-not $env:GITHUB_TOKEN) {
-    throw "GITHUB_TOKEN is required because ecommerce-gitops and GHCR image access are private."
+    throw "GITHUB_TOKEN is required. Add GITHUB_TOKEN=your_token to scripts\.env."
 }
+
+if ($env:GITHUB_TOKEN -in @("SENIN_GITHUB_TOKEN", "YENI_TOKEN")) {
+    throw "Replace the placeholder GITHUB_TOKEN in scripts\.env with a real GitHub token."
+}
+
+Update-SourceRepositories -Services $Services
 
 $dockerDesktop = "C:\Program Files\Docker\Docker\Docker Desktop.exe"
 if (Test-Path $dockerDesktop) {
@@ -89,8 +206,15 @@ if (Test-Path $dockerDesktop) {
 
 Wait-Docker
 
+Write-Host "Logging in to GHCR..."
+$env:GITHUB_TOKEN | docker login ghcr.io -u $GitHubUsername --password-stdin | Out-Null
+if ($LASTEXITCODE -ne 0) {
+    throw "Failed to login to ghcr.io. Check GitHubUsername and GITHUB_TOKEN in scripts\.env."
+}
+
 kubectl config use-context docker-desktop | Out-Null
 Wait-Kubernetes
+kubectl create namespace default --dry-run=client -o yaml | kubectl apply -f - | Out-Null
 
 Write-Host "Installing/checking Argo CD..."
 kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
@@ -112,25 +236,36 @@ kubectl create secret docker-registry ghcr-pull-secret `
     --docker-username=$GitHubUsername `
     --docker-password=$env:GITHUB_TOKEN `
     --dry-run=client -o yaml | kubectl apply -f -
+Set-DefaultImagePullSecret
 
-if (-not $env:JWT_SECRET_KEY) {
-    $env:JWT_SECRET_KEY = "v7I8Jm9N0P1Q2R3S4T5U6V7W8X9Y0Z1A2B3C4D5E6F7G8H9I0J1K2L3M4N5O6P7Q"
-    Write-Warning "JWT_SECRET_KEY is not set. Using the development-only default key."
-}
-
-Write-Host "Creating shared JWT secret..."
-kubectl create secret generic ecommerce-jwt-secret `
-    --from-literal=secret-key=$env:JWT_SECRET_KEY `
-    --dry-run=client -o yaml | kubectl apply -f -
+Write-Host "Adding shared JWT secret..."
+Ensure-JwtSecret
 
 Write-Host "Creating platform Argo CD application..."
 kubectl apply -f (Join-Path $RootDir "bootstrap\ecommerce-platform.yaml")
 kubectl -n argocd annotate application ecommerce-platform argocd.argoproj.io/refresh=hard --overwrite *> $null
-Wait-Workload
+
+foreach ($Service in $Services) {
+    Wait-Deployment -Deployment $Service.deployment
+    $Image = Get-DeploymentImage -Deployment $Service.deployment
+    Pull-Image -Image $Image
+}
+
+foreach ($Service in $Services) {
+    Write-Host "Restarting $($Service.deployment)..."
+    kubectl rollout restart "deployment/$($Service.deployment)"
+    kubectl rollout status "deployment/$($Service.deployment)" --timeout=180s
+}
 
 Write-Host "Starting LAN port-forwards..."
 Start-PortForward -Name "argocd" -Namespace "argocd" -Service "svc/argocd-server" -Mapping "${ArgoPort}:443"
-Start-PortForward -Name "ecommerce-api-gateway" -Namespace "default" -Service "svc/ecommerce-api-gateway-service" -Mapping "${GatewayPort}:8080"
+foreach ($Service in $Services) {
+    Start-PortForward `
+        -Name $Service.name `
+        -Namespace "default" `
+        -Service "svc/$($Service.service)" `
+        -Mapping "$($Service.localPort):$($Service.servicePort)"
+}
 
 $ArgoPassword = ""
 try {
@@ -151,15 +286,21 @@ Write-Host "Ready."
 Write-Host "Argo CD local: https://localhost:$ArgoPort"
 if ($PcIp) {
     Write-Host "Argo CD LAN:   https://${PcIp}:$ArgoPort"
-    Write-Host "Gateway LAN:   http://${PcIp}:$GatewayPort"
-    Write-Host "Swagger LAN:   http://${PcIp}:$GatewayPort/swagger-ui/index.html"
 }
 Write-Host "Argo user: admin"
 if ($ArgoPassword) {
     Write-Host "Argo pass: $ArgoPassword"
 }
-Write-Host "Gateway local: http://localhost:$GatewayPort"
-Write-Host "Swagger local: http://localhost:$GatewayPort/swagger-ui/index.html"
+foreach ($Service in $Services) {
+    $Path = $Service.urlPath
+    if (-not $Path) {
+        $Path = "/"
+    }
+    Write-Host "$($Service.name) local: http://localhost:$($Service.localPort)$Path"
+    if ($PcIp) {
+        Write-Host "$($Service.name) LAN:   http://${PcIp}:$($Service.localPort)$Path"
+    }
+}
 Write-Host ""
 kubectl -n argocd get applications -o wide
 kubectl get pods
