@@ -1,0 +1,32 @@
+[
+  {
+    "name": "ecommerce-auth",
+    "repo": "https://github.com/ilhamzefer-sketch/ecommerce-auth.git",
+    "argoApplication": "ecommerce-auth",
+    "deployment": "ecommerce-auth-app",
+    "service": "ecommerce-auth-service",
+    "localPort": 18080,
+    "servicePort": 8081,
+    "urlPath": "/swagger-ui/index.html"
+  },
+  {
+    "name": "ecommerce-api-gateway",
+    "repo": "https://github.com/ilhamzefer-sketch/ecommerce-api-gateway.git",
+    "argoApplication": "ecommerce-api-gateway",
+    "deployment": "ecommerce-api-gateway-app",
+    "service": "ecommerce-api-gateway-service",
+    "localPort": 8080,
+    "servicePort": 8080,
+    "urlPath": "/swagger-ui/index.html"
+  },
+  {
+    "name": "ecommerce-ui",
+    "repo": "https://github.com/ilhamzefer-sketch/ecommerce-ui.git",
+    "argoApplication": "ecommerce-ui",
+    "deployment": "ecommerce-ui-app",
+    "service": "ecommerce-ui-service",
+    "localPort": 3000,
+    "servicePort": 80,
+    "urlPath": "/"
+  }
+]
