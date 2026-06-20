@@ -6,6 +6,7 @@
     "deployments": [
       "postgres-db",
       "prometheus",
+      "loki",
       "grafana"
     ]
   },
