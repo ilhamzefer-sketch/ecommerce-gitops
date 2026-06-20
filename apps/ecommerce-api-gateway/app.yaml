@@ -19,7 +19,7 @@ spec:
         - name: ghcr-pull-secret
       containers:
         - name: ecommerce-api-gateway-app
-          image: ghcr.io/ilhamzefer-sketch/ecommerce-api-gateway:137543adb024e0a7b3630685d8a6e7d1ac2562ee
+          image: ghcr.io/ilhamzefer-sketch/ecommerce-api-gateway:0083e39544025f62170b15dd8979c120279da765
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
