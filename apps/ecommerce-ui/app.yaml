@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ecommerce-ui-app
+  labels:
+    app: ecommerce-ui-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ecommerce-ui-app
+  template:
+    metadata:
+      labels:
+        app: ecommerce-ui-app
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      containers:
+        - name: ecommerce-ui-app
+          image: ghcr.io/ilhamzefer-sketch/ecommerce-ui:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 15
+            periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ecommerce-ui-service
+spec:
+  type: ClusterIP
+  selector:
+    app: ecommerce-ui-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
