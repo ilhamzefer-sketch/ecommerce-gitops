@@ -34,7 +34,7 @@ spec:
                   name: ecommerce-jwt-secret
                   key: secret-key
             - name: CORS_ALLOWED_ORIGINS
-              value: "http://localhost:3000,http://localhost:5173"
+              value: "http://localhost:3000,http://localhost:5173,http://localhost:4173"
           readinessProbe:
             httpGet:
               path: /actuator/health/readiness
