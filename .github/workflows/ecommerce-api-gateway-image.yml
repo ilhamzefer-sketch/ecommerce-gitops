@@ -1,12 +1,12 @@
-name: Build and deploy ecommerce-auth image
+name: Build and deploy ecommerce-api-gateway image
 
 on:
   push:
     branches:
       - main
     paths:
-      - "_sources/ecommerce-auth/**"
-      - ".github/workflows/ecommerce-auth-image.yml"
+      - "_sources/ecommerce-api-gateway/**"
+      - ".github/workflows/ecommerce-api-gateway-image.yml"
   workflow_dispatch:
 
 permissions:
@@ -14,9 +14,9 @@ permissions:
   packages: write
 
 env:
-  IMAGE_NAME: ghcr.io/ilhamzefer-sketch/ecommerce-auth
-  APP_MANIFEST: apps/ecommerce-auth/app.yaml
-  SOURCE_DIR: _sources/ecommerce-auth
+  IMAGE_NAME: ghcr.io/ilhamzefer-sketch/ecommerce-api-gateway
+  APP_MANIFEST: apps/ecommerce-api-gateway/app.yaml
+  SOURCE_DIR: _sources/ecommerce-api-gateway
 
 jobs:
   build-and-update:
@@ -52,7 +52,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          perl -0pi -e "s#image: ghcr\.io/ilhamzefer-sketch/ecommerce-auth:[^\r\n ]+#image: ${IMAGE_NAME}:${GITHUB_SHA}#" "${APP_MANIFEST}"
+          perl -0pi -e "s#image: ghcr\.io/ilhamzefer-sketch/ecommerce-api-gateway:[^\r\n ]+#image: ${IMAGE_NAME}:${GITHUB_SHA}#" "${APP_MANIFEST}"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add "${APP_MANIFEST}"
@@ -60,5 +60,5 @@ jobs:
             echo "Manifest already points to ${IMAGE_NAME}:${GITHUB_SHA}"
             exit 0
           fi
-          git commit -m "Deploy ecommerce-auth ${GITHUB_SHA}"
+          git commit -m "Deploy ecommerce-api-gateway ${GITHUB_SHA}"
           git push
