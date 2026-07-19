@@ -9,6 +9,7 @@ import az.ilham.ecommerceauth.dto.user.ShopInviteResponse;
 import az.ilham.ecommerceauth.dto.user.ShopResponse;
 import az.ilham.ecommerceauth.dto.user.TransferShopOwnershipRequest;
 import az.ilham.ecommerceauth.user.entity.Shop;
+import az.ilham.ecommerceauth.user.entity.ShopAction;
 import az.ilham.ecommerceauth.user.entity.ShopInvite;
 import az.ilham.ecommerceauth.user.entity.ShopInviteStatus;
 import az.ilham.ecommerceauth.user.entity.ShopMember;
@@ -20,6 +21,7 @@ import az.ilham.ecommerceauth.user.repository.ShopInviteRepository;
 import az.ilham.ecommerceauth.user.repository.ShopMemberRepository;
 import az.ilham.ecommerceauth.user.repository.ShopRepository;
 import az.ilham.ecommerceauth.user.repository.UserRepository;
+import az.ilham.ecommerceauth.security.audit.AuthorizationAuditService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,6 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -53,6 +56,12 @@ class ShopServiceTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private ShopAuthorizationService shopAuthorizationService;
+
+    @Mock
+    private AuthorizationAuditService authorizationAuditService;
+
     @InjectMocks
     private ShopService shopService;
 
@@ -67,6 +76,7 @@ class ShopServiceTest {
                 .email("owner@example.com")
                 .firstName("Owner")
                 .lastName("User")
+                .emailVerified(true)
                 .build();
 
         teammate = User.builder()
@@ -75,7 +85,34 @@ class ShopServiceTest {
                 .email("team@example.com")
                 .firstName("Team")
                 .lastName("User")
+                .emailVerified(true)
                 .build();
+
+        lenient().when(shopAuthorizationService.resolveActions(ShopMemberRole.OWNER))
+                .thenReturn(java.util.EnumSet.allOf(ShopAction.class));
+        lenient().when(shopAuthorizationService.resolveActions(ShopMemberRole.MANAGER))
+                .thenReturn(java.util.EnumSet.of(
+                        ShopAction.SHOP_VIEW,
+                        ShopAction.MEMBERS_VIEW,
+                        ShopAction.MEMBERS_MANAGE,
+                        ShopAction.INVITES_VIEW,
+                        ShopAction.INVITES_MANAGE,
+                        ShopAction.LISTINGS_MANAGE
+                ));
+        lenient().when(shopAuthorizationService.resolveActions(ShopMemberRole.STAFF))
+                .thenReturn(java.util.EnumSet.of(ShopAction.SHOP_VIEW, ShopAction.MEMBERS_VIEW));
+        lenient().when(shopAuthorizationService.resolveActions(ShopMemberRole.LISTING_MANAGER))
+                .thenReturn(java.util.EnumSet.of(
+                        ShopAction.SHOP_VIEW,
+                        ShopAction.MEMBERS_VIEW,
+                        ShopAction.INVITES_VIEW,
+                        ShopAction.LISTINGS_MANAGE
+                ));
+        lenient().when(shopAuthorizationService.canManageMembers(ShopMemberRole.OWNER)).thenReturn(true);
+        lenient().when(shopAuthorizationService.canManageMembers(ShopMemberRole.MANAGER)).thenReturn(true);
+        lenient().when(shopAuthorizationService.canManageInvites(ShopMemberRole.OWNER)).thenReturn(true);
+        lenient().when(shopAuthorizationService.canManageInvites(ShopMemberRole.MANAGER)).thenReturn(true);
+        lenient().when(shopAuthorizationService.canTransferOwnership(ShopMemberRole.OWNER)).thenReturn(true);
     }
 
     @Test
@@ -101,6 +138,7 @@ class ShopServiceTest {
 
         assertEquals("my-shop", response.getSlug());
         assertEquals(ShopMemberRole.OWNER, response.getCurrentUserRole());
+        assertTrue(response.getAllowedActions().contains("OWNERSHIP_TRANSFER"));
         verify(shopMemberRepository).save(any(ShopMember.class));
     }
 
@@ -172,6 +210,7 @@ class ShopServiceTest {
 
         assertEquals("invitee@example.com", response.getInvitedEmail());
         assertEquals(ShopInviteStatus.PENDING, response.getStatus());
+        assertTrue(response.getAllowedActions().contains("ACCEPT"));
     }
 
     @Test
@@ -216,6 +255,38 @@ class ShopServiceTest {
         ShopResponse response = shopService.acceptInvite(request, "team-user");
 
         assertEquals(ShopMemberRole.STAFF, response.getCurrentUserRole());
+    }
+
+    @Test
+    void getMyPendingInvites_ShouldReturnInvitesForCurrentVerifiedUser() {
+        Shop shop = Shop.builder()
+                .id(100L)
+                .name("My Shop")
+                .slug("my-shop")
+                .type(ShopType.BUSINESS)
+                .status(ShopStatus.ACTIVE)
+                .ownerUser(owner)
+                .build();
+
+        ShopInvite invite = ShopInvite.builder()
+                .id(11L)
+                .shop(shop)
+                .invitedByUser(owner)
+                .invitedEmail("team@example.com")
+                .token("token-123")
+                .membershipRole(ShopMemberRole.STAFF)
+                .status(ShopInviteStatus.PENDING)
+                .expiresAt(LocalDateTime.now().plusDays(1))
+                .build();
+
+        when(userRepository.findByUsername("team-user")).thenReturn(Optional.of(teammate));
+        when(shopInviteRepository.findAllByInvitedEmailIgnoreCaseOrderByCreatedAtDesc("team@example.com"))
+                .thenReturn(List.of(invite));
+
+        List<ShopInviteResponse> response = shopService.getMyPendingInvites("team-user");
+
+        assertEquals(1, response.size());
+        assertEquals("My Shop", response.getFirst().getShopName());
     }
 
     @Test

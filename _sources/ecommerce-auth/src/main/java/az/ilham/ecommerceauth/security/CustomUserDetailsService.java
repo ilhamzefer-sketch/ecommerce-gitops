@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Stream;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,20 +23,31 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(usernameOrEmail)
-                .or(() -> userRepository.findByEmail(usernameOrEmail))
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username or email: " + usernameOrEmail));
+        User user = loadDomainUserByUsername(usernameOrEmail);
 
-        List<SimpleGrantedAuthority> authorities = user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName()))
+        List<SimpleGrantedAuthority> authorities = Stream.concat(
+                        user.getRoles().stream()
+                                .map(role -> new SimpleGrantedAuthority(role.getName())),
+                        user.getRoles().stream()
+                                .flatMap(role -> role.getPermissions().stream())
+                                .map(permission -> new SimpleGrantedAuthority(permission.getName()))
+                )
                 .collect(Collectors.toList());
 
-        return org.springframework.security.core.userdetails.User.builder()
-                .username(user.getUsername())
-                .password(user.getPasswordHash())
-                .disabled(!user.isEnabled())
-                .accountLocked(!user.isAccountNonLocked())
-                .authorities(authorities)
-                .build();
+        return new SecurityUserPrincipal(
+                user.getUsername(),
+                user.getPasswordHash(),
+                user.isEnabled(),
+                user.isAccountNonLocked(),
+                authorities,
+                user.getAuthorizationVersion()
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public User loadDomainUserByUsername(String usernameOrEmail) {
+        return userRepository.findByUsername(usernameOrEmail)
+                .or(() -> userRepository.findByEmail(usernameOrEmail))
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username or email: " + usernameOrEmail));
     }
 }

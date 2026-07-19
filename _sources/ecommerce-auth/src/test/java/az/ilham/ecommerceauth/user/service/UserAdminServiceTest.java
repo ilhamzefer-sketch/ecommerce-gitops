@@ -1,7 +1,9 @@
 package az.ilham.ecommerceauth.user.service;
 
+import az.ilham.ecommerceauth.auth.service.RefreshTokenService;
 import az.ilham.ecommerceauth.dto.user.UpdateUserRolesRequest;
 import az.ilham.ecommerceauth.dto.user.UserSummaryResponse;
+import az.ilham.ecommerceauth.security.audit.AuthorizationAuditService;
 import az.ilham.ecommerceauth.user.entity.Role;
 import az.ilham.ecommerceauth.user.entity.RoleName;
 import az.ilham.ecommerceauth.user.entity.User;
@@ -19,6 +21,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -30,6 +33,12 @@ class UserAdminServiceTest {
 
     @Mock
     private RoleRepository roleRepository;
+
+    @Mock
+    private RefreshTokenService refreshTokenService;
+
+    @Mock
+    private AuthorizationAuditService authorizationAuditService;
 
     @InjectMocks
     private UserAdminService userAdminService;
@@ -43,6 +52,7 @@ class UserAdminServiceTest {
                 .username("normal-user")
                 .email("normal@example.com")
                 .roles(Set.of(new Role(1L, RoleName.USER)))
+                .authorizationVersion(0L)
                 .enabled(true)
                 .accountNonLocked(true)
                 .build();
@@ -64,5 +74,7 @@ class UserAdminServiceTest {
         assertTrue(response.getRoles().contains(RoleName.USER));
         assertTrue(response.getRoles().contains(RoleName.OPERATOR));
         verify(userRepository).save(any(User.class));
+        verify(refreshTokenService, times(1)).revokeAllUserTokens(any(User.class));
+        verify(authorizationAuditService).log(any(), any(), any(), any());
     }
 }

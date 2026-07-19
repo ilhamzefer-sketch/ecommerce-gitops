@@ -9,6 +9,7 @@ import java.util.Optional;
 
 public interface ShopInviteRepository extends JpaRepository<ShopInvite, Long> {
     List<ShopInvite> findAllByShopIdOrderByCreatedAtDesc(Long shopId);
+    List<ShopInvite> findAllByInvitedEmailIgnoreCaseOrderByCreatedAtDesc(String invitedEmail);
     Optional<ShopInvite> findByToken(String token);
     boolean existsByShopIdAndInvitedEmailAndStatus(Long shopId, String invitedEmail, ShopInviteStatus status);
 }

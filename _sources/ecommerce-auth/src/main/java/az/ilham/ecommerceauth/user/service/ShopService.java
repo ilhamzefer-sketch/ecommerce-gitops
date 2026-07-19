@@ -10,6 +10,8 @@ import az.ilham.ecommerceauth.dto.user.ShopInviteResponse;
 import az.ilham.ecommerceauth.dto.user.ShopResponse;
 import az.ilham.ecommerceauth.dto.user.TransferShopOwnershipRequest;
 import az.ilham.ecommerceauth.dto.user.UpdateShopMemberRoleRequest;
+import az.ilham.ecommerceauth.security.audit.AuthorizationAuditService;
+import az.ilham.ecommerceauth.user.entity.ShopAction;
 import az.ilham.ecommerceauth.user.entity.Shop;
 import az.ilham.ecommerceauth.user.entity.ShopInvite;
 import az.ilham.ecommerceauth.user.entity.ShopInviteStatus;
@@ -27,8 +29,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -38,10 +43,13 @@ public class ShopService {
     private final ShopMemberRepository shopMemberRepository;
     private final ShopInviteRepository shopInviteRepository;
     private final UserRepository userRepository;
+    private final ShopAuthorizationService shopAuthorizationService;
+    private final AuthorizationAuditService authorizationAuditService;
 
     @Transactional
     public ShopResponse createShop(CreateShopRequest request, String usernameOrEmail) {
         User currentUser = findUser(usernameOrEmail);
+        ensureBusinessVerified(currentUser);
 
         String normalizedSlug = normalizeSlug(request.getSlug());
         if (shopRepository.existsBySlug(normalizedSlug)) {
@@ -66,6 +74,12 @@ public class ShopService {
                 .active(true)
                 .build();
         shopMemberRepository.save(ownerMember);
+        authorizationAuditService.log(
+                "SHOP_CREATE",
+                "SHOP",
+                normalizedSlug,
+                "owner=" + currentUser.getUsername() + ", type=" + request.getType()
+        );
 
         return toShopResponse(savedShop, ownerMember, List.of(ownerMember));
     }
@@ -102,6 +116,7 @@ public class ShopService {
     @Transactional
     public ShopMemberResponse addShopMember(Long shopId, AddShopMemberRequest request, String usernameOrEmail) {
         User currentUser = findUser(usernameOrEmail);
+        ensureBusinessVerified(currentUser);
         ShopMember currentMembership = requireMembership(shopId, currentUser.getId());
         ensureCanManageMembers(currentMembership);
 
@@ -129,6 +144,12 @@ public class ShopService {
         }
 
         ShopMember savedMember = shopMemberRepository.save(member);
+        authorizationAuditService.log(
+                "SHOP_MEMBER_UPSERT",
+                "SHOP",
+                String.valueOf(shopId),
+                "actor=" + currentUser.getUsername() + ", target=" + memberUser.getUsername() + ", role=" + request.getMembershipRole()
+        );
         return toMemberResponse(savedMember);
     }
 
@@ -140,6 +161,7 @@ public class ShopService {
             String usernameOrEmail
     ) {
         User currentUser = findUser(usernameOrEmail);
+        ensureBusinessVerified(currentUser);
         ShopMember currentMembership = requireMembership(shopId, currentUser.getId());
         ensureCanManageMembers(currentMembership);
 
@@ -156,12 +178,19 @@ public class ShopService {
 
         member.setMembershipRole(request.getMembershipRole());
         ShopMember savedMember = shopMemberRepository.save(member);
+        authorizationAuditService.log(
+                "SHOP_MEMBER_ROLE_UPDATE",
+                "SHOP",
+                String.valueOf(shopId),
+                "actor=" + currentUser.getUsername() + ", targetUserId=" + memberUserId + ", role=" + request.getMembershipRole()
+        );
         return toMemberResponse(savedMember);
     }
 
     @Transactional
     public void deactivateShopMember(Long shopId, Long memberUserId, String usernameOrEmail) {
         User currentUser = findUser(usernameOrEmail);
+        ensureBusinessVerified(currentUser);
         ShopMember currentMembership = requireMembership(shopId, currentUser.getId());
         ensureCanManageMembers(currentMembership);
 
@@ -177,11 +206,18 @@ public class ShopService {
 
         member.setActive(false);
         shopMemberRepository.save(member);
+        authorizationAuditService.log(
+                "SHOP_MEMBER_DEACTIVATE",
+                "SHOP",
+                String.valueOf(shopId),
+                "actor=" + currentUser.getUsername() + ", targetUserId=" + memberUserId
+        );
     }
 
     @Transactional
     public void leaveShop(Long shopId, String usernameOrEmail) {
         User currentUser = findUser(usernameOrEmail);
+        ensureBusinessVerified(currentUser);
         ShopMember membership = requireMembership(shopId, currentUser.getId());
 
         if (membership.getMembershipRole() == ShopMemberRole.OWNER) {
@@ -194,14 +230,21 @@ public class ShopService {
 
         membership.setActive(false);
         shopMemberRepository.save(membership);
+        authorizationAuditService.log(
+                "SHOP_LEAVE",
+                "SHOP",
+                String.valueOf(shopId),
+                "user=" + currentUser.getUsername()
+        );
     }
 
     @Transactional
     public ShopResponse transferOwnership(Long shopId, TransferShopOwnershipRequest request, String usernameOrEmail) {
         User currentUser = findUser(usernameOrEmail);
+        ensureBusinessVerified(currentUser);
         ShopMember currentMembership = requireMembership(shopId, currentUser.getId());
 
-        if (currentMembership.getMembershipRole() != ShopMemberRole.OWNER) {
+        if (!shopAuthorizationService.canTransferOwnership(currentMembership.getMembershipRole())) {
             throw new IllegalArgumentException("Only the current owner can transfer shop ownership");
         }
         if (currentUser.getId().equals(request.getNewOwnerUserId())) {
@@ -219,6 +262,12 @@ public class ShopService {
         newOwnerMembership.setMembershipRole(ShopMemberRole.OWNER);
         shopMemberRepository.save(currentMembership);
         ShopMember savedNewOwnerMembership = shopMemberRepository.save(newOwnerMembership);
+        authorizationAuditService.log(
+                "SHOP_OWNERSHIP_TRANSFER",
+                "SHOP",
+                String.valueOf(shopId),
+                "from=" + currentUser.getUsername() + ", to=" + newOwnerMembership.getUser().getUsername()
+        );
 
         List<ShopMember> members = shopMemberRepository.findAllByShopIdAndActiveTrue(shopId);
         return toShopResponse(shop, savedNewOwnerMembership, members);
@@ -227,8 +276,9 @@ public class ShopService {
     @Transactional
     public ShopInviteResponse createInvite(Long shopId, CreateShopInviteRequest request, String usernameOrEmail) {
         User currentUser = findUser(usernameOrEmail);
+        ensureBusinessVerified(currentUser);
         ShopMember currentMembership = requireMembership(shopId, currentUser.getId());
-        ensureCanManageMembers(currentMembership);
+        ensureCanManageInvites(currentMembership);
 
         String normalizedEmail = request.getInvitedEmail().trim().toLowerCase();
         if (shopInviteRepository.existsByShopIdAndInvitedEmailAndStatus(shopId, normalizedEmail, ShopInviteStatus.PENDING)) {
@@ -250,6 +300,12 @@ public class ShopService {
                 .build();
 
         ShopInvite savedInvite = shopInviteRepository.save(invite);
+        authorizationAuditService.log(
+                "SHOP_INVITE_CREATE",
+                "SHOP",
+                String.valueOf(shopId),
+                "actor=" + currentUser.getUsername() + ", email=" + normalizedEmail + ", role=" + request.getMembershipRole()
+        );
         return toInviteResponse(savedInvite);
     }
 
@@ -259,6 +315,18 @@ public class ShopService {
         requireMembership(shopId, currentUser.getId());
 
         return shopInviteRepository.findAllByShopIdOrderByCreatedAtDesc(shopId).stream()
+                .map(this::markExpiredIfNeeded)
+                .map(this::toInviteResponse)
+                .toList();
+    }
+
+    @Transactional
+    public List<ShopInviteResponse> getMyPendingInvites(String usernameOrEmail) {
+        User currentUser = findUser(usernameOrEmail);
+        ensureBusinessVerified(currentUser);
+
+        return shopInviteRepository.findAllByInvitedEmailIgnoreCaseOrderByCreatedAtDesc(currentUser.getEmail()).stream()
+                .map(this::markExpiredIfNeeded)
                 .map(this::toInviteResponse)
                 .toList();
     }
@@ -266,8 +334,9 @@ public class ShopService {
     @Transactional
     public ShopInviteResponse cancelInvite(Long shopId, Long inviteId, String usernameOrEmail) {
         User currentUser = findUser(usernameOrEmail);
+        ensureBusinessVerified(currentUser);
         ShopMember currentMembership = requireMembership(shopId, currentUser.getId());
-        ensureCanManageMembers(currentMembership);
+        ensureCanManageInvites(currentMembership);
 
         ShopInvite invite = shopInviteRepository.findById(inviteId)
                 .orElseThrow(() -> new ResourceNotFoundException("Shop invite not found: " + inviteId));
@@ -281,14 +350,21 @@ public class ShopService {
 
         invite.setStatus(ShopInviteStatus.CANCELLED);
         ShopInvite savedInvite = shopInviteRepository.save(invite);
+        authorizationAuditService.log(
+                "SHOP_INVITE_CANCEL",
+                "SHOP",
+                String.valueOf(shopId),
+                "actor=" + currentUser.getUsername() + ", inviteId=" + inviteId
+        );
         return toInviteResponse(savedInvite);
     }
 
     @Transactional
     public ShopInviteResponse resendInvite(Long shopId, Long inviteId, String usernameOrEmail) {
         User currentUser = findUser(usernameOrEmail);
+        ensureBusinessVerified(currentUser);
         ShopMember currentMembership = requireMembership(shopId, currentUser.getId());
-        ensureCanManageMembers(currentMembership);
+        ensureCanManageInvites(currentMembership);
 
         ShopInvite invite = shopInviteRepository.findById(inviteId)
                 .orElseThrow(() -> new ResourceNotFoundException("Shop invite not found: " + inviteId));
@@ -312,12 +388,19 @@ public class ShopService {
         invite.setExpiresAt(LocalDateTime.now().plusDays(7));
 
         ShopInvite savedInvite = shopInviteRepository.save(invite);
+        authorizationAuditService.log(
+                "SHOP_INVITE_RESEND",
+                "SHOP",
+                String.valueOf(shopId),
+                "actor=" + currentUser.getUsername() + ", inviteId=" + inviteId
+        );
         return toInviteResponse(savedInvite);
     }
 
     @Transactional
     public ShopResponse acceptInvite(AcceptShopInviteRequest request, String usernameOrEmail) {
         User currentUser = findUser(usernameOrEmail);
+        ensureBusinessVerified(currentUser);
 
         ShopInvite invite = shopInviteRepository.findByToken(request.getToken())
                 .orElseThrow(() -> new ResourceNotFoundException("Shop invite not found"));
@@ -351,6 +434,12 @@ public class ShopService {
         invite.setStatus(ShopInviteStatus.ACCEPTED);
         invite.setAcceptedAt(LocalDateTime.now());
         shopInviteRepository.save(invite);
+        authorizationAuditService.log(
+                "SHOP_INVITE_ACCEPT",
+                "SHOP",
+                String.valueOf(invite.getShop().getId()),
+                "user=" + currentUser.getUsername() + ", inviteId=" + invite.getId()
+        );
 
         List<ShopMember> members = shopMemberRepository.findAllByShopIdAndActiveTrue(invite.getShop().getId());
         return toShopResponse(savedMembership.getShop(), savedMembership, members);
@@ -368,9 +457,20 @@ public class ShopService {
     }
 
     private void ensureCanManageMembers(ShopMember membership) {
-        if (membership.getMembershipRole() != ShopMemberRole.OWNER
-                && membership.getMembershipRole() != ShopMemberRole.MANAGER) {
+        if (!shopAuthorizationService.canManageMembers(membership.getMembershipRole())) {
             throw new IllegalArgumentException("Current user cannot manage shop members");
+        }
+    }
+
+    private void ensureCanManageInvites(ShopMember membership) {
+        if (!shopAuthorizationService.canManageInvites(membership.getMembershipRole())) {
+            throw new IllegalArgumentException("Current user cannot manage shop invites");
+        }
+    }
+
+    private void ensureBusinessVerified(User user) {
+        if (!user.isEmailVerified()) {
+            throw new IllegalArgumentException("Email verification is required for seller and shop actions");
         }
     }
 
@@ -385,6 +485,7 @@ public class ShopService {
                 .ownerUserId(shop.getOwnerUser().getId())
                 .ownerUsername(shop.getOwnerUser().getUsername())
                 .currentUserRole(currentMembership.getMembershipRole())
+                .allowedActions(toActionNames(shopAuthorizationService.resolveActions(currentMembership.getMembershipRole())))
                 .createdAt(shop.getCreatedAt())
                 .updatedAt(shop.getUpdatedAt())
                 .members(members.stream().map(this::toMemberResponse).toList())
@@ -413,10 +514,39 @@ public class ShopService {
                 .membershipRole(invite.getMembershipRole())
                 .status(invite.getStatus())
                 .token(invite.getToken())
+                .allowedActions(toInviteActionNames(invite))
                 .expiresAt(invite.getExpiresAt())
                 .acceptedAt(invite.getAcceptedAt())
                 .createdAt(invite.getCreatedAt())
                 .build();
+    }
+
+    private ShopInvite markExpiredIfNeeded(ShopInvite invite) {
+        if (invite.getStatus() == ShopInviteStatus.PENDING && invite.getExpiresAt().isBefore(LocalDateTime.now())) {
+            invite.setStatus(ShopInviteStatus.EXPIRED);
+            return shopInviteRepository.save(invite);
+        }
+        return invite;
+    }
+
+    private Set<String> toActionNames(Set<ShopAction> actions) {
+        return actions.stream()
+                .map(Enum::name)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    private Set<String> toInviteActionNames(ShopInvite invite) {
+        Set<String> actions = new LinkedHashSet<>();
+        if (invite.getStatus() == ShopInviteStatus.PENDING) {
+            actions.add("ACCEPT");
+        }
+        if (invite.getStatus() == ShopInviteStatus.PENDING || invite.getStatus() == ShopInviteStatus.CANCELLED || invite.getStatus() == ShopInviteStatus.EXPIRED) {
+            actions.add("RESEND");
+        }
+        if (invite.getStatus() == ShopInviteStatus.PENDING) {
+            actions.add("CANCEL");
+        }
+        return actions;
     }
 
     private String normalizeSlug(String slug) {

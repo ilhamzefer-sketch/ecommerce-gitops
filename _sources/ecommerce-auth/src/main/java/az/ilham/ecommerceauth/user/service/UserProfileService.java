@@ -2,7 +2,6 @@ package az.ilham.ecommerceauth.user.service;
 
 import az.ilham.ecommerceauth.common.exception.ResourceNotFoundException;
 import az.ilham.ecommerceauth.dto.user.UserProfileResponse;
-import az.ilham.ecommerceauth.user.entity.Role;
 import az.ilham.ecommerceauth.user.entity.User;
 import az.ilham.ecommerceauth.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +32,12 @@ public class UserProfileService {
                 .enabled(user.isEnabled())
                 .emailVerified(user.isEmailVerified())
                 .roles(user.getRoles().stream()
-                        .map(Role::getName)
+                        .map(role -> role.getName())
+                        .sorted()
+                        .collect(Collectors.toCollection(LinkedHashSet::new)))
+                .permissions(user.getRoles().stream()
+                        .flatMap(role -> role.getPermissions().stream())
+                        .map(permission -> permission.getName())
                         .sorted()
                         .collect(Collectors.toCollection(LinkedHashSet::new)))
                 .lastLoginAt(user.getLastLoginAt())

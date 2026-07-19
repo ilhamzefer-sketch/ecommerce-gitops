@@ -1,5 +1,6 @@
 package az.ilham.ecommerceauth.security;
 
+import az.ilham.ecommerceauth.user.entity.User;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,8 +43,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+            User user = this.userDetailsService.loadDomainUserByUsername(username);
             
-            if (jwtService.isTokenValid(jwt, userDetails)) {
+            if (jwtService.isTokenValid(jwt, userDetails, user.getAuthorizationVersion())) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,

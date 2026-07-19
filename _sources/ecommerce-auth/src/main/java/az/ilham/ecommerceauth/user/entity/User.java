@@ -60,6 +60,10 @@ public class User extends BaseEntity {
     @Builder.Default
     private int failedLoginAttempts = 0;
 
+    @Builder.Default
+    @Column(nullable = false)
+    private long authorizationVersion = 0L;
+
     private LocalDateTime lastLoginAt;
 
     @ManyToMany(fetch = FetchType.EAGER)

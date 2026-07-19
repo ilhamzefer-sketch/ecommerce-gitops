@@ -1,6 +1,8 @@
 package az.ilham.ecommerceauth.user.service;
 
 import az.ilham.ecommerceauth.common.exception.ResourceNotFoundException;
+import az.ilham.ecommerceauth.auth.service.RefreshTokenService;
+import az.ilham.ecommerceauth.security.audit.AuthorizationAuditService;
 import az.ilham.ecommerceauth.dto.user.UpdateUserRolesRequest;
 import az.ilham.ecommerceauth.dto.user.UserSummaryResponse;
 import az.ilham.ecommerceauth.user.entity.Role;
@@ -9,6 +11,7 @@ import az.ilham.ecommerceauth.user.entity.User;
 import az.ilham.ecommerceauth.user.repository.RoleRepository;
 import az.ilham.ecommerceauth.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,10 +23,13 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserAdminService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final RefreshTokenService refreshTokenService;
+    private final AuthorizationAuditService authorizationAuditService;
 
     @Transactional(readOnly = true)
     public List<UserSummaryResponse> getAllUsers() {
@@ -51,7 +57,16 @@ public class UserAdminService {
                 .collect(Collectors.toCollection(LinkedHashSet::new));
 
         user.setRoles(roles);
+        user.setAuthorizationVersion(user.getAuthorizationVersion() + 1);
         userRepository.save(user);
+        refreshTokenService.revokeAllUserTokens(user);
+        log.info("System roles updated for userId={} username={} roles={}", user.getId(), user.getUsername(), normalizedRoleNames);
+        authorizationAuditService.log(
+                "USER_ROLE_UPDATE",
+                "USER",
+                user.getUsername(),
+                "Assigned roles=" + normalizedRoleNames + ", authzVersion=" + user.getAuthorizationVersion()
+        );
 
         return toSummary(user);
     }
@@ -72,6 +87,11 @@ public class UserAdminService {
                 .emailVerified(user.isEmailVerified())
                 .roles(user.getRoles().stream()
                         .map(Role::getName)
+                        .sorted()
+                        .collect(Collectors.toCollection(LinkedHashSet::new)))
+                .permissions(user.getRoles().stream()
+                        .flatMap(role -> role.getPermissions().stream())
+                        .map(permission -> permission.getName())
                         .sorted()
                         .collect(Collectors.toCollection(LinkedHashSet::new)))
                 .lastLoginAt(user.getLastLoginAt())
