@@ -13,7 +13,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "Admin-facing summary of a user account.")
+@Schema(description = "Admin paneli üçün istifadəçi hesabının qısa xülasəsi.")
 public class UserSummaryResponse {
 
     private Long id;
@@ -24,6 +24,7 @@ public class UserSummaryResponse {
     private boolean enabled;
     private boolean emailVerified;
     private Set<String> roles;
+    private Set<String> permissions;
     private LocalDateTime lastLoginAt;
     private LocalDateTime createdAt;
 }

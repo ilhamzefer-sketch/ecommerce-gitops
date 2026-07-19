@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "Request payload for creating a shop.")
+@Schema(description = "Mağaza yaratmaq üçün sorğu payload-u.")
 public class CreateShopRequest {
 
     @NotBlank(message = "Shop name is required")

@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/users")
-@Tag(name = "User Profile", description = "Endpoints for authenticated user profile information.")
+@Tag(name = "İstifadəçi Profili", description = "Autentifikasiya olunmuş istifadəçinin profil məlumatları üçün endpoint-lər.")
 @SecurityRequirement(name = "bearerAuth")
 @RequiredArgsConstructor
 public class UserController {
@@ -27,15 +27,15 @@ public class UserController {
     private final UserProfileService userProfileService;
 
     @GetMapping("/me")
-    @Operation(summary = "Get the current authenticated user's profile")
+    @Operation(summary = "Cari autentifikasiya olunmuş istifadəçinin profilini gətir")
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "User profile returned successfully",
+                    description = "İstifadəçi profili uğurla qaytarıldı",
                     content = @Content(schema = @Schema(implementation = UserProfileResponse.class))
             ),
-            @ApiResponse(responseCode = "401", description = "Access token is missing, invalid, or expired"),
-            @ApiResponse(responseCode = "403", description = "The user does not have access to this resource")
+            @ApiResponse(responseCode = "401", description = "Access token yoxdur, etibarsızdır və ya müddəti bitib"),
+            @ApiResponse(responseCode = "403", description = "İstifadəçinin bu resursa giriş icazəsi yoxdur")
     })
     public ResponseEntity<UserProfileResponse> getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(userProfileService.getCurrentUserProfile(userDetails.getUsername()));

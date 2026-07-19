@@ -36,7 +36,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/shops")
-@Tag(name = "Shop Membership", description = "Shop creation and team membership endpoints for authenticated users.")
+@Tag(name = "Mağaza Üzvlüyü", description = "Autentifikasiya olunmuş istifadəçilər üçün mağaza yaratma və komanda üzvlüyü endpoint-ləri.")
 @SecurityRequirement(name = "bearerAuth")
 @RequiredArgsConstructor
 public class ShopController {
@@ -44,12 +44,12 @@ public class ShopController {
     private final ShopService shopService;
 
     @PostMapping
-    @Operation(summary = "Create a new shop and assign the current user as OWNER")
+    @Operation(summary = "Yeni mağaza yarat və cari istifadəçini OWNER kimi təyin et")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Shop created successfully",
+            @ApiResponse(responseCode = "200", description = "Mağaza uğurla yaradıldı",
                     content = @Content(schema = @Schema(implementation = ShopResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid payload or duplicate slug"),
-            @ApiResponse(responseCode = "401", description = "Access token is missing, invalid, or expired")
+            @ApiResponse(responseCode = "400", description = "Sorğu yanlışdır və ya slug artıq istifadə olunur"),
+            @ApiResponse(responseCode = "401", description = "Access token yoxdur, etibarsızdır və ya müddəti bitib")
     })
     public ResponseEntity<ShopResponse> createShop(
             @Valid @RequestBody CreateShopRequest request,
@@ -59,23 +59,23 @@ public class ShopController {
     }
 
     @GetMapping("/mine")
-    @Operation(summary = "List shops where the current user is a member")
+    @Operation(summary = "Cari istifadəçinin üzv olduğu mağazaları siyahıla")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Shop list returned successfully",
+            @ApiResponse(responseCode = "200", description = "Mağaza siyahısı uğurla qaytarıldı",
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = ShopResponse.class)))),
-            @ApiResponse(responseCode = "401", description = "Access token is missing, invalid, or expired")
+            @ApiResponse(responseCode = "401", description = "Access token yoxdur, etibarsızdır və ya müddəti bitib")
     })
     public ResponseEntity<List<ShopResponse>> getMyShops(@AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(shopService.getMyShops(userDetails.getUsername()));
     }
 
     @GetMapping("/{shopId}")
-    @Operation(summary = "Get a shop visible to the current member")
+    @Operation(summary = "Cari üzvə görünən mağaza məlumatını gətir")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Shop returned successfully",
+            @ApiResponse(responseCode = "200", description = "Mağaza uğurla qaytarıldı",
                     content = @Content(schema = @Schema(implementation = ShopResponse.class))),
-            @ApiResponse(responseCode = "401", description = "Access token is missing, invalid, or expired"),
-            @ApiResponse(responseCode = "404", description = "Shop or membership not found")
+            @ApiResponse(responseCode = "401", description = "Access token yoxdur, etibarsızdır və ya müddəti bitib"),
+            @ApiResponse(responseCode = "404", description = "Mağaza və ya üzvlük tapılmadı")
     })
     public ResponseEntity<ShopResponse> getShop(
             @PathVariable Long shopId,
@@ -85,12 +85,12 @@ public class ShopController {
     }
 
     @GetMapping("/{shopId}/members")
-    @Operation(summary = "Get members of a shop where the current user belongs")
+    @Operation(summary = "Cari istifadəçinin üzv olduğu mağazanın üzvlərini gətir")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Shop members returned successfully",
+            @ApiResponse(responseCode = "200", description = "Mağaza üzvləri uğurla qaytarıldı",
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = ShopMemberResponse.class)))),
-            @ApiResponse(responseCode = "401", description = "Access token is missing, invalid, or expired"),
-            @ApiResponse(responseCode = "404", description = "Shop or membership not found")
+            @ApiResponse(responseCode = "401", description = "Access token yoxdur, etibarsızdır və ya müddəti bitib"),
+            @ApiResponse(responseCode = "404", description = "Mağaza və ya üzvlük tapılmadı")
     })
     public ResponseEntity<List<ShopMemberResponse>> getShopMembers(
             @PathVariable Long shopId,
@@ -100,13 +100,13 @@ public class ShopController {
     }
 
     @PostMapping("/{shopId}/members")
-    @Operation(summary = "Add or reactivate a shop member by username or email")
+    @Operation(summary = "İstifadəçi adı və ya e-poçt ilə mağaza üzvü əlavə et və ya yenidən aktiv et")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Shop member saved successfully",
+            @ApiResponse(responseCode = "200", description = "Mağaza üzvü uğurla yadda saxlanıldı",
                     content = @Content(schema = @Schema(implementation = ShopMemberResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Current user cannot manage members or payload is invalid"),
-            @ApiResponse(responseCode = "401", description = "Access token is missing, invalid, or expired"),
-            @ApiResponse(responseCode = "404", description = "Shop, membership, or target user not found")
+            @ApiResponse(responseCode = "400", description = "Cari istifadəçi üzvləri idarə edə bilmir və ya sorğu yanlışdır"),
+            @ApiResponse(responseCode = "401", description = "Access token yoxdur, etibarsızdır və ya müddəti bitib"),
+            @ApiResponse(responseCode = "404", description = "Mağaza, üzvlük və ya hədəf istifadəçi tapılmadı")
     })
     public ResponseEntity<ShopMemberResponse> addShopMember(
             @PathVariable Long shopId,
@@ -117,13 +117,13 @@ public class ShopController {
     }
 
     @PatchMapping("/{shopId}/members/{memberUserId}")
-    @Operation(summary = "Update a shop member role")
+    @Operation(summary = "Mağaza üzvünün rolunu yenilə")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Shop member role updated successfully",
+            @ApiResponse(responseCode = "200", description = "Mağaza üzvünün rolu uğurla yeniləndi",
                     content = @Content(schema = @Schema(implementation = ShopMemberResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Current user cannot manage members or payload is invalid"),
-            @ApiResponse(responseCode = "401", description = "Access token is missing, invalid, or expired"),
-            @ApiResponse(responseCode = "404", description = "Shop, membership, or target user not found")
+            @ApiResponse(responseCode = "400", description = "Cari istifadəçi üzvləri idarə edə bilmir və ya sorğu yanlışdır"),
+            @ApiResponse(responseCode = "401", description = "Access token yoxdur, etibarsızdır və ya müddəti bitib"),
+            @ApiResponse(responseCode = "404", description = "Mağaza, üzvlük və ya hədəf istifadəçi tapılmadı")
     })
     public ResponseEntity<ShopMemberResponse> updateMemberRole(
             @PathVariable Long shopId,
@@ -140,12 +140,12 @@ public class ShopController {
     }
 
     @DeleteMapping("/{shopId}/members/{memberUserId}")
-    @Operation(summary = "Deactivate a shop member")
+    @Operation(summary = "Mağaza üzvünü deaktiv et")
     @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Shop member deactivated successfully"),
-            @ApiResponse(responseCode = "400", description = "Current user cannot manage members or target cannot be deactivated"),
-            @ApiResponse(responseCode = "401", description = "Access token is missing, invalid, or expired"),
-            @ApiResponse(responseCode = "404", description = "Shop, membership, or target user not found")
+            @ApiResponse(responseCode = "204", description = "Mağaza üzvü uğurla deaktiv edildi"),
+            @ApiResponse(responseCode = "400", description = "Cari istifadəçi üzvləri idarə edə bilmir və ya hədəf deaktiv edilə bilməz"),
+            @ApiResponse(responseCode = "401", description = "Access token yoxdur, etibarsızdır və ya müddəti bitib"),
+            @ApiResponse(responseCode = "404", description = "Mağaza, üzvlük və ya hədəf istifadəçi tapılmadı")
     })
     public ResponseEntity<Void> deactivateMember(
             @PathVariable Long shopId,
@@ -157,13 +157,13 @@ public class ShopController {
     }
 
     @PostMapping("/{shopId}/invites")
-    @Operation(summary = "Create a shop invite for an email address")
+    @Operation(summary = "E-poçt ünvanı üçün mağaza dəvəti yarat")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Shop invite created successfully",
+            @ApiResponse(responseCode = "200", description = "Mağaza dəvəti uğurla yaradıldı",
                     content = @Content(schema = @Schema(implementation = ShopInviteResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Current user cannot manage invites or payload is invalid"),
-            @ApiResponse(responseCode = "401", description = "Access token is missing, invalid, or expired"),
-            @ApiResponse(responseCode = "404", description = "Shop or membership not found")
+            @ApiResponse(responseCode = "400", description = "Cari istifadəçi dəvətləri idarə edə bilmir və ya sorğu yanlışdır"),
+            @ApiResponse(responseCode = "401", description = "Access token yoxdur, etibarsızdır və ya müddəti bitib"),
+            @ApiResponse(responseCode = "404", description = "Mağaza və ya üzvlük tapılmadı")
     })
     public ResponseEntity<ShopInviteResponse> createInvite(
             @PathVariable Long shopId,
@@ -174,12 +174,12 @@ public class ShopController {
     }
 
     @GetMapping("/{shopId}/invites")
-    @Operation(summary = "List invites for a shop where the current user belongs")
+    @Operation(summary = "Cari istifadəçinin üzv olduğu mağazanın dəvətlərini siyahıla")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Shop invites returned successfully",
+            @ApiResponse(responseCode = "200", description = "Mağaza dəvətləri uğurla qaytarıldı",
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = ShopInviteResponse.class)))),
-            @ApiResponse(responseCode = "401", description = "Access token is missing, invalid, or expired"),
-            @ApiResponse(responseCode = "404", description = "Shop or membership not found")
+            @ApiResponse(responseCode = "401", description = "Access token yoxdur, etibarsızdır və ya müddəti bitib"),
+            @ApiResponse(responseCode = "404", description = "Mağaza və ya üzvlük tapılmadı")
     })
     public ResponseEntity<List<ShopInviteResponse>> getInvites(
             @PathVariable Long shopId,
@@ -188,14 +188,26 @@ public class ShopController {
         return ResponseEntity.ok(shopService.getShopInvites(shopId, userDetails.getUsername()));
     }
 
-    @PostMapping("/invites/accept")
-    @Operation(summary = "Accept a shop invite with a token")
+    @GetMapping("/invites/mine")
+    @Operation(summary = "Cari istifadəçi üçün aktiv və keçmiş mağaza dəvətlərini siyahıla")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Shop invite accepted successfully",
+            @ApiResponse(responseCode = "200", description = "Cari istifadəçinin dəvətləri uğurla qaytarıldı",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = ShopInviteResponse.class)))),
+            @ApiResponse(responseCode = "400", description = "E-poçt təsdiqi tələb olunur"),
+            @ApiResponse(responseCode = "401", description = "Access token yoxdur, etibarsızdır və ya müddəti bitib")
+    })
+    public ResponseEntity<List<ShopInviteResponse>> getMyInvites(@AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(shopService.getMyPendingInvites(userDetails.getUsername()));
+    }
+
+    @PostMapping("/invites/accept")
+    @Operation(summary = "Token vasitəsilə mağaza dəvətini qəbul et")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Mağaza dəvəti uğurla qəbul edildi",
                     content = @Content(schema = @Schema(implementation = ShopResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invite is invalid, expired, or email does not match"),
-            @ApiResponse(responseCode = "401", description = "Access token is missing, invalid, or expired"),
-            @ApiResponse(responseCode = "404", description = "Invite or user not found")
+            @ApiResponse(responseCode = "400", description = "Dəvət etibarsızdır, vaxtı bitib və ya e-poçt uyğun gəlmir"),
+            @ApiResponse(responseCode = "401", description = "Access token yoxdur, etibarsızdır və ya müddəti bitib"),
+            @ApiResponse(responseCode = "404", description = "Dəvət və ya istifadəçi tapılmadı")
     })
     public ResponseEntity<ShopResponse> acceptInvite(
             @Valid @RequestBody AcceptShopInviteRequest request,
@@ -205,12 +217,12 @@ public class ShopController {
     }
 
     @DeleteMapping("/{shopId}/members/me")
-    @Operation(summary = "Leave a shop as the current authenticated member")
+    @Operation(summary = "Cari autentifikasiya olunmuş üzv kimi mağazadan ayrıl")
     @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Current user left the shop successfully"),
-            @ApiResponse(responseCode = "400", description = "Owner cannot leave without ownership transfer"),
-            @ApiResponse(responseCode = "401", description = "Access token is missing, invalid, or expired"),
-            @ApiResponse(responseCode = "404", description = "Shop or membership not found")
+            @ApiResponse(responseCode = "204", description = "Cari istifadəçi mağazadan uğurla ayrıldı"),
+            @ApiResponse(responseCode = "400", description = "Owner ownership transfer etmədən mağazadan ayrıla bilməz"),
+            @ApiResponse(responseCode = "401", description = "Access token yoxdur, etibarsızdır və ya müddəti bitib"),
+            @ApiResponse(responseCode = "404", description = "Mağaza və ya üzvlük tapılmadı")
     })
     public ResponseEntity<Void> leaveShop(
             @PathVariable Long shopId,
@@ -221,13 +233,13 @@ public class ShopController {
     }
 
     @PatchMapping("/{shopId}/invites/{inviteId}/cancel")
-    @Operation(summary = "Cancel a pending shop invite")
+    @Operation(summary = "Gözləmədə olan mağaza dəvətini ləğv et")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Invite cancelled successfully",
+            @ApiResponse(responseCode = "200", description = "Dəvət uğurla ləğv edildi",
                     content = @Content(schema = @Schema(implementation = ShopInviteResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invite cannot be cancelled or does not belong to the shop"),
-            @ApiResponse(responseCode = "401", description = "Access token is missing, invalid, or expired"),
-            @ApiResponse(responseCode = "404", description = "Shop, membership, or invite not found")
+            @ApiResponse(responseCode = "400", description = "Dəvət ləğv edilə bilməz və ya bu mağazaya aid deyil"),
+            @ApiResponse(responseCode = "401", description = "Access token yoxdur, etibarsızdır və ya müddəti bitib"),
+            @ApiResponse(responseCode = "404", description = "Mağaza, üzvlük və ya dəvət tapılmadı")
     })
     public ResponseEntity<ShopInviteResponse> cancelInvite(
             @PathVariable Long shopId,
@@ -238,13 +250,13 @@ public class ShopController {
     }
 
     @PatchMapping("/{shopId}/invites/{inviteId}/resend")
-    @Operation(summary = "Resend a shop invite by generating a new token and expiry")
+    @Operation(summary = "Yeni token və son tarix yaradaraq mağaza dəvətini yenidən göndər")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Invite resent successfully",
+            @ApiResponse(responseCode = "200", description = "Dəvət uğurla yenidən göndərildi",
                     content = @Content(schema = @Schema(implementation = ShopInviteResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invite cannot be resent or does not belong to the shop"),
-            @ApiResponse(responseCode = "401", description = "Access token is missing, invalid, or expired"),
-            @ApiResponse(responseCode = "404", description = "Shop, membership, or invite not found")
+            @ApiResponse(responseCode = "400", description = "Dəvət yenidən göndərilə bilməz və ya bu mağazaya aid deyil"),
+            @ApiResponse(responseCode = "401", description = "Access token yoxdur, etibarsızdır və ya müddəti bitib"),
+            @ApiResponse(responseCode = "404", description = "Mağaza, üzvlük və ya dəvət tapılmadı")
     })
     public ResponseEntity<ShopInviteResponse> resendInvite(
             @PathVariable Long shopId,
@@ -255,13 +267,13 @@ public class ShopController {
     }
 
     @PatchMapping("/{shopId}/ownership-transfer")
-    @Operation(summary = "Transfer shop ownership to another active member")
+    @Operation(summary = "Mağaza sahibliyini başqa aktiv üzvə ötür")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Ownership transferred successfully",
+            @ApiResponse(responseCode = "200", description = "Sahiblik uğurla ötürüldü",
                     content = @Content(schema = @Schema(implementation = ShopResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Only the current owner can transfer ownership or target is invalid"),
-            @ApiResponse(responseCode = "401", description = "Access token is missing, invalid, or expired"),
-            @ApiResponse(responseCode = "404", description = "Shop, membership, or target member not found")
+            @ApiResponse(responseCode = "400", description = "Sahibliyi yalnız cari owner ötürə bilər və ya hədəf yanlışdır"),
+            @ApiResponse(responseCode = "401", description = "Access token yoxdur, etibarsızdır və ya müddəti bitib"),
+            @ApiResponse(responseCode = "404", description = "Mağaza, üzvlük və ya hədəf üzv tapılmadı")
     })
     public ResponseEntity<ShopResponse> transferOwnership(
             @PathVariable Long shopId,

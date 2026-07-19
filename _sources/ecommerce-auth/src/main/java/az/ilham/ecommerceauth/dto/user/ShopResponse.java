@@ -11,12 +11,13 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "Shop details returned to authenticated shop members.")
+@Schema(description = "Autentifikasiya olunmuş mağaza üzvlərinə qaytarılan mağaza məlumatları.")
 public class ShopResponse {
 
     private Long id;
@@ -28,6 +29,7 @@ public class ShopResponse {
     private Long ownerUserId;
     private String ownerUsername;
     private ShopMemberRole currentUserRole;
+    private Set<String> allowedActions;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private List<ShopMemberResponse> members;

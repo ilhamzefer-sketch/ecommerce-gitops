@@ -13,11 +13,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "Request payload for adding a user to a shop.")
+@Schema(description = "İstifadəçini mağazaya əlavə etmək üçün sorğu payload-u.")
 public class AddShopMemberRequest {
 
     @NotBlank(message = "Member identifier is required")
-    @Schema(description = "Username or email of the user to add.", example = "demo-user")
+    @Schema(description = "Əlavə olunacaq istifadəçinin username-i və ya e-poçtu.", example = "demo-user")
     private String memberIdentifier;
 
     @NotNull(message = "Membership role is required")

@@ -1,19 +1,20 @@
 package az.ilham.ecommerceauth.dto.user;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "Mağaza dəvətini qəbul etmək üçün sorğu payload-u.")
-public class AcceptShopInviteRequest {
+@Schema(description = "Bir sistem rolunun və ona bağlı icazələrin admin görünüşü.")
+public class RolePermissionsResponse {
 
-    @NotBlank(message = "Invite token is required")
-    private String token;
+    private String roleName;
+    private Set<String> permissions;
 }

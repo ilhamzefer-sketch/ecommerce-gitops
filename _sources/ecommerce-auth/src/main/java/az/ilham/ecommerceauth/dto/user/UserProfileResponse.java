@@ -13,7 +13,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "Authenticated user profile returned to the frontend.")
+@Schema(description = "Frontend-ə qaytarılan autentifikasiya olunmuş istifadəçi profili.")
 public class UserProfileResponse {
 
     private Long id;
@@ -24,6 +24,7 @@ public class UserProfileResponse {
     private boolean enabled;
     private boolean emailVerified;
     private Set<String> roles;
+    private Set<String> permissions;
     private LocalDateTime lastLoginAt;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "Shop member information for frontend team management.")
+@Schema(description = "Frontend-də komanda idarəsi üçün mağaza üzvü məlumatları.")
 public class ShopMemberResponse {
 
     private Long userId;

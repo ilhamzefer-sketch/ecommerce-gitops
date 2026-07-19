@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "Request payload for transferring shop ownership to another active member.")
+@Schema(description = "Mağaza sahibliyini başqa aktiv üzvə ötürmək üçün sorğu payload-u.")
 public class TransferShopOwnershipRequest {
 
     @NotNull(message = "New owner user id is required")

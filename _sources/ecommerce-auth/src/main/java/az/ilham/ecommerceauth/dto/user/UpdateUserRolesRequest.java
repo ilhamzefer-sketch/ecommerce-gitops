@@ -13,12 +13,12 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "Request payload for updating a user's system roles.")
+@Schema(description = "İstifadəçinin sistem rollarını yeniləmək üçün sorğu payload-u.")
 public class UpdateUserRolesRequest {
 
     @NotEmpty(message = "At least one role must be provided")
     @Schema(
-            description = "Role names to assign. ROLE_USER is always preserved automatically.",
+            description = "Təyin olunacaq rol adları. ROLE_USER həmişə avtomatik qorunur.",
             example = "[\"ROLE_USER\", \"ROLE_OPERATOR\"]"
     )
     private Set<String> roles;

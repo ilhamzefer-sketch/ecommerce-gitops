@@ -9,12 +9,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "Shop invite details for frontend invitation management.")
+@Schema(description = "Frontend-də dəvət idarəsi üçün mağaza dəvəti məlumatları.")
 public class ShopInviteResponse {
 
     private Long id;
@@ -24,6 +25,7 @@ public class ShopInviteResponse {
     private ShopMemberRole membershipRole;
     private ShopInviteStatus status;
     private String token;
+    private Set<String> allowedActions;
     private LocalDateTime expiresAt;
     private LocalDateTime acceptedAt;
     private LocalDateTime createdAt;

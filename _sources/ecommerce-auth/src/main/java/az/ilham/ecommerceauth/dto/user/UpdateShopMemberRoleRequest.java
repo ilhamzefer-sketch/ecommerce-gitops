@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "Request payload for updating a shop member role.")
+@Schema(description = "Mağaza üzvünün rolunu yeniləmək üçün sorğu payload-u.")
 public class UpdateShopMemberRoleRequest {
 
     @NotNull(message = "Membership role is required")
