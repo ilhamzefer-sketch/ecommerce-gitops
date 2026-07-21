@@ -68,8 +68,12 @@ export function AccountPage() {
                 </dd>
               </div>
               <div>
-                <dt>Status mesajı</dt>
-                <dd>{user?.message ?? "Profil mesajı mövcud deyil"}</dd>
+                <dt>E-poçt</dt>
+                <dd>{user?.email ?? "Məlumat yoxdur"}</dd>
+              </div>
+              <div>
+                <dt>Telefon</dt>
+                <dd>{user?.phoneNumber ?? "Məlumat yoxdur"}</dd>
               </div>
             </dl>
             <div className="profile-card__actions">

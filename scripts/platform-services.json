@@ -22,6 +22,26 @@
     "urlPath": "/swagger-ui/index.html"
   },
   {
+    "name": "ecommerce-shop",
+    "kind": "service",
+    "argoApplication": "ecommerce-shop",
+    "deployment": "ecommerce-shop-app",
+    "service": "ecommerce-shop-service",
+    "localPort": 18082,
+    "servicePort": 8082,
+    "urlPath": "/actuator/health"
+  },
+  {
+    "name": "ecommerce-product",
+    "kind": "service",
+    "argoApplication": "ecommerce-product",
+    "deployment": "ecommerce-product-app",
+    "service": "ecommerce-product-service",
+    "localPort": 18083,
+    "servicePort": 8083,
+    "urlPath": "/actuator/health"
+  },
+  {
     "name": "ecommerce-api-gateway",
     "kind": "service",
     "repo": "https://github.com/ilhamzefer-sketch/ecommerce-api-gateway.git",

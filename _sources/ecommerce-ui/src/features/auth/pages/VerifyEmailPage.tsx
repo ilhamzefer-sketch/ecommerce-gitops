@@ -6,6 +6,7 @@ import { BrandMark } from "../../../shared/ui/BrandMark";
 import { Button } from "../../../shared/ui/Button";
 import { Notice } from "../../../shared/ui/Notice";
 import { PageLoader } from "../../../shared/ui/PageLoader";
+import { AuthVisualPanel } from "../components/AuthVisualPanel";
 import { verifyEmail } from "../auth-api";
 
 type VerifyState =
@@ -54,30 +55,43 @@ export function VerifyEmailPage() {
   }, [loadVerification]);
 
   return (
-    <section className="auth-card auth-card--entrance" aria-labelledby="verify-title">
-      <BrandMark />
-      <div className="auth-card__header">
-        <h1 id="verify-title">E-poçt təsdiqi</h1>
-        <p>Hesabınızı aktivləşdirmək üçün təsdiq tokeni backendə göndərilir.</p>
-      </div>
-      {state.status === "loading" ? <PageLoader label="E-poçt təsdiqlənir" /> : null}
-      {state.status === "success" ? (
-        <Notice tone="success" title="Təsdiq tamamlandı" message={state.message} />
-      ) : null}
-      {state.status === "error" ? <Notice tone="danger" title="Təsdiq alınmadı" message={state.message} /> : null}
-      {state.status !== "loading" ? (
-        <div className="auth-result-icon" aria-hidden="true">
-          {state.status === "success" ? <CheckCircle2 size={42} /> : <XCircle size={42} />}
+    <div className="auth-shell auth-shell--compact auth-card--entrance">
+      <AuthVisualPanel
+        eyebrow="E-poçt təsdiqi"
+        title="Hesab aktivləşməsi bir toxunuş uzaqdadır."
+        description="Təsdiq keçidi yoxlanılır və hesabınız Mizan alış-veriş axınına hazırlanır."
+      />
+      <section className="auth-form-panel auth-form-panel--compact auth-result-panel" aria-labelledby="verify-title">
+        <div className="auth-form-panel__brand">
+          <BrandMark compact />
+          <span>
+            <strong>Mizan.az</strong>
+            Təsdiq mərkəzi
+          </span>
         </div>
-      ) : null}
-      {state.status === "error" ? (
-        <Button className="auth-result-button" variant="secondary" onClick={loadVerification}>
-          Yenidən yoxla
-        </Button>
-      ) : null}
-      <p className="auth-switch">
-        <Link to="/login">Giriş səhifəsinə qayıt</Link>
-      </p>
-    </section>
+        <div className="auth-card__header auth-card__header--split">
+          <h1 id="verify-title">E-poçt təsdiqi</h1>
+          <p>Hesabınızı aktivləşdirmək üçün təsdiq tokeni backendə göndərilir.</p>
+        </div>
+        {state.status === "loading" ? <PageLoader label="E-poçt təsdiqlənir" /> : null}
+        {state.status === "success" ? (
+          <Notice tone="success" title="Təsdiq tamamlandı" message={state.message} />
+        ) : null}
+        {state.status === "error" ? <Notice tone="danger" title="Təsdiq alınmadı" message={state.message} /> : null}
+        {state.status !== "loading" ? (
+          <div className="auth-result-icon" aria-hidden="true">
+            {state.status === "success" ? <CheckCircle2 size={42} /> : <XCircle size={42} />}
+          </div>
+        ) : null}
+        {state.status === "error" ? (
+          <Button className="auth-result-button" variant="secondary" onClick={loadVerification}>
+            Yenidən yoxla
+          </Button>
+        ) : null}
+        <p className="auth-switch">
+          <Link to="/login">Giriş səhifəsinə qayıt</Link>
+        </p>
+      </section>
+    </div>
   );
 }

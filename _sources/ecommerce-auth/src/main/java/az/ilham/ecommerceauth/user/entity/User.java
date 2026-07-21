@@ -42,6 +42,9 @@ public class User extends BaseEntity {
     @Column(unique = true, nullable = false)
     private String email;
 
+    @Column(unique = true, nullable = false, length = 20)
+    private String phoneNumber;
+
     @Column(nullable = false)
     private String passwordHash;
 
@@ -58,11 +61,10 @@ public class User extends BaseEntity {
     private boolean emailVerified = false;
 
     @Builder.Default
-    private int failedLoginAttempts = 0;
+    private boolean phoneVerified = false;
 
     @Builder.Default
-    @Column(nullable = false)
-    private long authorizationVersion = 0L;
+    private int failedLoginAttempts = 0;
 
     private LocalDateTime lastLoginAt;
 

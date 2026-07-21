@@ -1,4 +1,4 @@
-import { MailCheck } from "lucide-react";
+import { Mail, MailCheck } from "lucide-react";
 import { FormEvent, useState } from "react";
 import { Link } from "react-router-dom";
 import { getFriendlyErrorMessage } from "../../../shared/api/api-error";
@@ -7,6 +7,7 @@ import { BrandMark } from "../../../shared/ui/BrandMark";
 import { Button } from "../../../shared/ui/Button";
 import { Notice } from "../../../shared/ui/Notice";
 import { TextField } from "../../../shared/ui/TextField";
+import { AuthVisualPanel } from "../components/AuthVisualPanel";
 import { forgotPassword } from "../auth-api";
 
 type ForgotPasswordField = "email";
@@ -50,31 +51,45 @@ export function ForgotPasswordPage() {
   }
 
   return (
-    <section className="auth-card auth-card--entrance" aria-labelledby="forgot-title">
-      <BrandMark />
-      <div className="auth-card__header">
-        <h1 id="forgot-title">Şifrə bərpası</h1>
-        <p>E-poçt ünvanınızı daxil edin. Əgər hesab mövcuddursa, bərpa təlimatı göndəriləcək.</p>
-      </div>
-      {formError ? <Notice tone="danger" message={formError} /> : null}
-      {successMessage ? <Notice tone="success" message={successMessage} /> : null}
-      <form className="form-stack" onSubmit={handleSubmit} noValidate>
-        <TextField
-          label="E-poçt"
-          name="email"
-          type="email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          error={errors.email}
-          autoComplete="email"
-        />
-        <Button fullWidth type="submit" isLoading={isSubmitting} icon={<MailCheck size={19} />}>
-          Təlimatı göndər
-        </Button>
-      </form>
-      <p className="auth-switch">
-        Şifrə yadınıza düşdü? <Link to="/login">Daxil olun</Link>
-      </p>
-    </section>
+    <div className="auth-shell auth-shell--compact auth-card--entrance">
+      <AuthVisualPanel
+        eyebrow="Hesab bərpası"
+        title="Şifrənizi sakit və təhlükəsiz bərpa edin."
+        description="Mizan hesabınız üçün bərpa keçidi yalnız qeyd etdiyiniz e-poçta göndərilir."
+      />
+      <section className="auth-form-panel auth-form-panel--compact" aria-labelledby="forgot-title">
+        <div className="auth-form-panel__brand">
+          <BrandMark compact />
+          <span>
+            <strong>Mizan.az</strong>
+            Şifrə bərpası
+          </span>
+        </div>
+        <div className="auth-card__header auth-card__header--split">
+          <h1 id="forgot-title">Şifrə bərpası</h1>
+          <p>E-poçt ünvanınızı daxil edin. Əgər hesab mövcuddursa, bərpa təlimatı göndəriləcək.</p>
+        </div>
+        {formError ? <Notice tone="danger" message={formError} /> : null}
+        {successMessage ? <Notice tone="success" message={successMessage} /> : null}
+        <form className="form-stack" onSubmit={handleSubmit} noValidate>
+          <TextField
+            label="E-poçt"
+            name="email"
+            type="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            error={errors.email}
+            autoComplete="email"
+            leading={<Mail size={18} aria-hidden="true" />}
+          />
+          <Button fullWidth type="submit" isLoading={isSubmitting} icon={<MailCheck size={19} />}>
+            Təlimatı göndər
+          </Button>
+        </form>
+        <p className="auth-switch">
+          Şifrə yadınıza düşdü? <Link to="/login">Daxil olun</Link>
+        </p>
+      </section>
+    </div>
   );
 }

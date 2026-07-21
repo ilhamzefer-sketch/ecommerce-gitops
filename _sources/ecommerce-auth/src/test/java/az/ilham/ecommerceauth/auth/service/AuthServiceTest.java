@@ -6,7 +6,6 @@ import az.ilham.ecommerceauth.dto.auth.AuthResponse;
 import az.ilham.ecommerceauth.dto.auth.RegisterRequest;
 import az.ilham.ecommerceauth.security.JwtService;
 import az.ilham.ecommerceauth.user.entity.Role;
-import az.ilham.ecommerceauth.user.entity.RoleName;
 import az.ilham.ecommerceauth.user.entity.User;
 import az.ilham.ecommerceauth.user.repository.RoleRepository;
 import az.ilham.ecommerceauth.user.repository.UserRepository;
@@ -46,6 +45,8 @@ class AuthServiceTest {
     private PasswordResetTokenRepository passwordResetTokenRepository;
     @Mock
     private EmailVerificationTokenRepository emailVerificationTokenRepository;
+    @Mock
+    private PhoneNumberNormalizer phoneNumberNormalizer;
 
     @InjectMocks
     private AuthService authService;
@@ -57,6 +58,7 @@ class AuthServiceTest {
         registerRequest = RegisterRequest.builder()
                 .username("testuser")
                 .email("test@example.com")
+                .phoneNumber("+994501112233")
                 .password("password123")
                 .firstName("Test")
                 .lastName("User")
@@ -66,9 +68,8 @@ class AuthServiceTest {
     @Test
     void register_ShouldSaveUserAndReturnSuccessMessage() {
         // Arrange
-        when(userRepository.findByUsername(any())).thenReturn(Optional.empty());
-        when(userRepository.findByEmail(any())).thenReturn(Optional.empty());
-        when(roleRepository.findByName(RoleName.USER)).thenReturn(Optional.of(new Role(1L, RoleName.USER)));
+        when(phoneNumberNormalizer.normalize(any())).thenReturn("+994501112233");
+        when(roleRepository.findByName("ROLE_USER")).thenReturn(Optional.of(new Role(1L, "ROLE_USER")));
         when(passwordEncoder.encode(any())).thenReturn("hashed_password");
 
         // Act

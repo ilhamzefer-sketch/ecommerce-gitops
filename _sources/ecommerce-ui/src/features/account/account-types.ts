@@ -1,9 +1,15 @@
 export type BackendAuthority = string | { authority?: string };
 
 export type UserProfileResponse = {
+  id?: number;
   username?: string;
+  email?: string;
+  phoneNumber?: string;
+  firstName?: string;
+  lastName?: string;
+  emailVerified?: boolean;
+  phoneVerified?: boolean;
   roles?: BackendAuthority[];
-  message?: string;
 };
 
 export function normalizeRoles(roles?: BackendAuthority[]) {

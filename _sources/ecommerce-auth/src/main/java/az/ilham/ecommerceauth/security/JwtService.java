@@ -30,13 +30,8 @@ public class JwtService {
         return jwtExpiration;
     }
 
-    public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
-    }
-
-    public long extractAuthorizationVersion(String token) {
-        Long version = extractClaim(token, claims -> claims.get("authz_version", Long.class));
-        return version == null ? 0L : version;
+    public Long extractUserId(String token) {
+        return Long.valueOf(extractClaim(token, Claims::getSubject));
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
@@ -51,21 +46,16 @@ public class JwtService {
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
-                .filter(authority -> authority.startsWith("ROLE_"))
-                .toList();
-        List<String> permissions = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .filter(authority -> !authority.startsWith("ROLE_"))
                 .toList();
         
+        SecurityUserPrincipal principal = (SecurityUserPrincipal) userDetails;
         extraClaims.put("roles", roles);
-        extraClaims.put("permissions", permissions);
-        extraClaims.put("authz_version", resolveAuthorizationVersion(userDetails));
+        extraClaims.put("username", principal.getUsername());
         extraClaims.put("token_type", "access");
 
         return Jwts.builder()
                 .claims(extraClaims)
-                .subject(userDetails.getUsername())
+                .subject(principal.userId().toString())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + jwtExpiration))
                 .id(UUID.randomUUID().toString())
@@ -74,13 +64,8 @@ public class JwtService {
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
-    }
-
-    public boolean isTokenValid(String token, UserDetails userDetails, long authorizationVersion) {
-        return isTokenValid(token, userDetails)
-                && extractAuthorizationVersion(token) == authorizationVersion;
+        SecurityUserPrincipal principal = (SecurityUserPrincipal) userDetails;
+        return extractUserId(token).equals(principal.userId()) && !isTokenExpired(token);
     }
 
     private boolean isTokenExpired(String token) {
@@ -102,12 +87,5 @@ public class JwtService {
     private SecretKey getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
-    }
-
-    private long resolveAuthorizationVersion(UserDetails userDetails) {
-        if (userDetails instanceof SecurityUserPrincipal principal) {
-            return principal.authorizationVersion();
-        }
-        return 0L;
     }
 }

@@ -1,4 +1,4 @@
-import { KeyRound } from "lucide-react";
+import { KeyRound, LockKeyhole } from "lucide-react";
 import { FormEvent, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { ApiError, getFriendlyErrorMessage } from "../../../shared/api/api-error";
@@ -7,6 +7,7 @@ import { BrandMark } from "../../../shared/ui/BrandMark";
 import { Button } from "../../../shared/ui/Button";
 import { Notice } from "../../../shared/ui/Notice";
 import { PasswordField } from "../../../shared/ui/PasswordField";
+import { AuthVisualPanel } from "../components/AuthVisualPanel";
 import { resetPassword } from "../auth-api";
 
 type ResetPasswordField = "newPassword" | "confirmPassword";
@@ -65,38 +66,53 @@ export function ResetPasswordPage() {
   }
 
   return (
-    <section className="auth-card auth-card--entrance" aria-labelledby="reset-title">
-      <BrandMark />
-      <div className="auth-card__header">
-        <h1 id="reset-title">Şifrəni yeniləyin</h1>
-        <p>Yeni şifrəniz ən azı 8 simvoldan ibarət olmalıdır.</p>
-      </div>
-      {formError ? <Notice tone="danger" message={formError} /> : null}
-      {successMessage ? <Notice tone="success" message={successMessage} /> : null}
-      <form className="form-stack" onSubmit={handleSubmit} noValidate>
-        <PasswordField
-          label="Yeni şifrə"
-          name="newPassword"
-          value={newPassword}
-          onChange={(event) => setNewPassword(event.target.value)}
-          error={errors.newPassword}
-          autoComplete="new-password"
-        />
-        <PasswordField
-          label="Yeni şifrə təkrarı"
-          name="confirmPassword"
-          value={confirmPassword}
-          onChange={(event) => setConfirmPassword(event.target.value)}
-          error={errors.confirmPassword}
-          autoComplete="new-password"
-        />
-        <Button fullWidth type="submit" isLoading={isSubmitting} icon={<KeyRound size={19} />}>
-          Şifrəni yenilə
-        </Button>
-      </form>
-      <p className="auth-switch">
-        Hazırsınız? <Link to="/login">Daxil olun</Link>
-      </p>
-    </section>
+    <div className="auth-shell auth-shell--compact auth-card--entrance">
+      <AuthVisualPanel
+        eyebrow="Təhlükəsiz yeniləmə"
+        title="Hesabınıza yeni açar təyin edin."
+        description="Yeni şifrə təsdiqləndikdən sonra Mizan hesabınıza yenidən giriş edə bilərsiniz."
+      />
+      <section className="auth-form-panel auth-form-panel--compact" aria-labelledby="reset-title">
+        <div className="auth-form-panel__brand">
+          <BrandMark compact />
+          <span>
+            <strong>Mizan.az</strong>
+            Yeni şifrə
+          </span>
+        </div>
+        <div className="auth-card__header auth-card__header--split">
+          <h1 id="reset-title">Şifrəni yeniləyin</h1>
+          <p>Yeni şifrəniz ən azı 8 simvoldan ibarət olmalıdır.</p>
+        </div>
+        {formError ? <Notice tone="danger" message={formError} /> : null}
+        {successMessage ? <Notice tone="success" message={successMessage} /> : null}
+        <form className="form-stack" onSubmit={handleSubmit} noValidate>
+          <PasswordField
+            label="Yeni şifrə"
+            name="newPassword"
+            value={newPassword}
+            onChange={(event) => setNewPassword(event.target.value)}
+            error={errors.newPassword}
+            autoComplete="new-password"
+            leading={<LockKeyhole size={18} aria-hidden="true" />}
+          />
+          <PasswordField
+            label="Yeni şifrə təkrarı"
+            name="confirmPassword"
+            value={confirmPassword}
+            onChange={(event) => setConfirmPassword(event.target.value)}
+            error={errors.confirmPassword}
+            autoComplete="new-password"
+            leading={<LockKeyhole size={18} aria-hidden="true" />}
+          />
+          <Button fullWidth type="submit" isLoading={isSubmitting} icon={<KeyRound size={19} />}>
+            Şifrəni yenilə
+          </Button>
+        </form>
+        <p className="auth-switch">
+          Hazırsınız? <Link to="/login">Daxil olun</Link>
+        </p>
+      </section>
+    </div>
   );
 }

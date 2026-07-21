@@ -5,7 +5,7 @@ type BrandMarkProps = {
 export function BrandMark({ compact = false }: BrandMarkProps) {
   return (
     <div className={compact ? "brand-mark brand-mark--compact" : "brand-mark"}>
-      <img src="/assets/mizan-logo.png" alt="MIZAN.AZ" />
+      <img src="/assets/mizan-logo-professional.png" alt="MIZAN.AZ" width="64" height="64" />
     </div>
   );
 }

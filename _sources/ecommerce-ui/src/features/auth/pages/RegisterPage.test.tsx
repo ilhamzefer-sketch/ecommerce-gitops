@@ -14,6 +14,9 @@ const registerMock = vi.mocked(register);
 async function fillRegisterForm() {
   await userEvent.type(screen.getByLabelText("İstifadəçi adı"), "mizanuser");
   await userEvent.type(screen.getByLabelText("E-poçt"), "user@mizan.az");
+  await userEvent.type(screen.getByLabelText("Telefon nömrəsi"), "+994501112233");
+  await userEvent.type(screen.getByLabelText("Ad"), "Mizan");
+  await userEvent.type(screen.getByLabelText("Soyad"), "İstifadəçi");
   await userEvent.type(screen.getByLabelText("Şifrə"), "password123");
   await userEvent.type(screen.getByLabelText("Şifrə təkrarı"), "password123");
 }
@@ -33,15 +36,16 @@ describe("RegisterPage", () => {
     );
 
     await fillRegisterForm();
-    await userEvent.click(screen.getByRole("button", { name: /qeydiyyatdan keç/i }));
+    await userEvent.click(screen.getByRole("button", { name: /hesab yarat/i }));
 
     expect(await screen.findByText("Qeydiyyat tamamlandı. E-poçtunuzu yoxlayın və sonra giriş edin.")).toBeInTheDocument();
     expect(registerMock).toHaveBeenCalledWith({
       username: "mizanuser",
       email: "user@mizan.az",
+      phoneNumber: "+994501112233",
       password: "password123",
-      firstName: undefined,
-      lastName: undefined
+      firstName: "Mizan",
+      lastName: "İstifadəçi"
     });
   });
 
@@ -55,7 +59,7 @@ describe("RegisterPage", () => {
     );
 
     await fillRegisterForm();
-    await userEvent.click(screen.getByRole("button", { name: /qeydiyyatdan keç/i }));
+    await userEvent.click(screen.getByRole("button", { name: /hesab yarat/i }));
 
     expect(await screen.findByText("Email should be valid")).toBeInTheDocument();
   });

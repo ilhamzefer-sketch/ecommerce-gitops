@@ -10,6 +10,18 @@ const emptySession: AuthSession = {
   accessToken: null
 };
 
+let bootstrapRefreshPromise: ReturnType<typeof authApi.refreshSession> | null = null;
+
+function bootstrapSession() {
+  if (!bootstrapRefreshPromise) {
+    bootstrapRefreshPromise = authApi.refreshSession().finally(() => {
+      bootstrapRefreshPromise = null;
+    });
+  }
+
+  return bootstrapRefreshPromise;
+}
+
 function sessionFromResponse(response: AuthResponse): AuthSession {
   return {
     accessToken: response.accessToken ?? null,
@@ -120,8 +132,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       onSessionExpired: markSessionExpired
     });
 
-    authApi
-      .refreshSession()
+    bootstrapSession()
       .then(async (response) => {
         if (!isMounted) {
           return;

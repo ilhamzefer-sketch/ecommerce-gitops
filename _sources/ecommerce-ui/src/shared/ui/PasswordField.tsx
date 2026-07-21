@@ -1,12 +1,13 @@
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { TextField } from "./TextField";
-import type { InputHTMLAttributes } from "react";
+import type { InputHTMLAttributes, ReactNode } from "react";
 
 type PasswordFieldProps = Omit<InputHTMLAttributes<HTMLInputElement>, "type"> & {
   label: string;
   error?: string;
   helperText?: string;
+  leading?: ReactNode;
 };
 
 export function PasswordField(props: PasswordFieldProps) {

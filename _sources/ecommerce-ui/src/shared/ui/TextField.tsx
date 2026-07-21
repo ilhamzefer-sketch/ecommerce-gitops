@@ -4,10 +4,11 @@ type TextFieldProps = InputHTMLAttributes<HTMLInputElement> & {
   label: string;
   error?: string;
   helperText?: string;
+  leading?: ReactNode;
   trailing?: ReactNode;
 };
 
-export function TextField({ label, error, helperText, trailing, id, className = "", ...props }: TextFieldProps) {
+export function TextField({ label, error, helperText, leading, trailing, id, className = "", ...props }: TextFieldProps) {
   const inputId = id ?? props.name;
   const messageId = error ? `${inputId}-error` : helperText ? `${inputId}-helper` : undefined;
 
@@ -17,6 +18,7 @@ export function TextField({ label, error, helperText, trailing, id, className = 
         {label}
       </label>
       <div className="field__control">
+        {leading ? <div className="field__leading">{leading}</div> : null}
         <input
           id={inputId}
           className="field__input"

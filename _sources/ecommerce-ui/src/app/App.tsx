@@ -1,5 +1,11 @@
 import { AppRoutes } from "./router";
+import { ScrollToTop } from "../shared/navigation/ScrollToTop";
 
 export function App() {
-  return <AppRoutes />;
+  return (
+    <>
+      <ScrollToTop />
+      <AppRoutes />
+    </>
+  );
 }

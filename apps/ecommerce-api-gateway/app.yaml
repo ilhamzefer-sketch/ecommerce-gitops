@@ -28,6 +28,10 @@ spec:
               value: "8080"
             - name: AUTH_SERVICE_URL
               value: "http://ecommerce-auth-service:8081"
+            - name: SHOP_SERVICE_URL
+              value: "http://ecommerce-shop-service:8082"
+            - name: PRODUCT_SERVICE_URL
+              value: "http://ecommerce-product-service:8083"
             - name: JWT_SECRET_KEY
               valueFrom:
                 secretKeyRef:

@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:product;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE
+    username: sa
+    password:
+  flyway:
+    enabled: false
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+application:
+  security:
+    jwt-secret: test-only-jwt-secret-key-that-is-at-least-32-characters
+  services:
+    shop-url: http://localhost:9999

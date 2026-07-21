@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ecommerce-product-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ecommerce-product-app
+  template:
+    metadata:
+      labels:
+        app: ecommerce-product-app
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      containers:
+        - name: ecommerce-product-app
+          image: ghcr.io/ilhamzefer-sketch/ecommerce-product:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8083
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:postgresql://postgres-service:5433/ecommerce?currentSchema=ecommerce_product"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "postgres"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "password"
+            - name: SPRING_FLYWAY_SCHEMAS
+              value: "ecommerce_product"
+            - name: JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ecommerce-jwt-secret
+                  key: secret-key
+            - name: SHOP_SERVICE_URL
+              value: "http://ecommerce-shop-service:8082"
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8083
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8083
+            initialDelaySeconds: 30
+            periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ecommerce-product-service
+spec:
+  selector:
+    app: ecommerce-product-app
+  ports:
+    - port: 8083
+      targetPort: 8083

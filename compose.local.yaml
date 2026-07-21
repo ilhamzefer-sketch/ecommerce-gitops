@@ -20,7 +20,9 @@ services:
       start_period: 5s
 
   ecommerce-auth:
-    image: ghcr.io/ilhamzefer-sketch/ecommerce-auth:latest
+    build:
+      context: ../../backend/ecommerce-auth
+    image: mizan/ecommerce-auth:local
     restart: unless-stopped
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ecommerce?currentSchema=ecommerce_auth
@@ -31,6 +33,11 @@ services:
       JWT_SECRET_KEY: ${JWT_SECRET_KEY:-v7I8Jm9N0P1Q2R3S4T5U6V7W8X9Y0Z1A2B3C4D5E6F7G8H9I0J1K2L3M4N5O6P7Q}
       REFRESH_COOKIE_SECURE: "false"
       API_GATEWAY_PUBLIC_URL: http://localhost:8080
+      BOOTSTRAP_ADMIN_ENABLED: "true"
+      BOOTSTRAP_ADMIN_USERNAME: ${BOOTSTRAP_ADMIN_USERNAME:-admin}
+      BOOTSTRAP_ADMIN_EMAIL: ${BOOTSTRAP_ADMIN_EMAIL:-admin@mizan.local}
+      BOOTSTRAP_ADMIN_PHONE: ${BOOTSTRAP_ADMIN_PHONE:-+994500000000}
+      BOOTSTRAP_ADMIN_PASSWORD: ${BOOTSTRAP_ADMIN_PASSWORD:-ChangeMe123!}
     ports:
       - "8081:8081"
     depends_on:
@@ -43,17 +50,74 @@ services:
       retries: 12
       start_period: 30s
 
+  ecommerce-shop:
+    build:
+      context: ../../backend/ecommerce-shop
+    image: mizan/ecommerce-shop:local
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ecommerce?currentSchema=ecommerce_shop
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      SPRING_FLYWAY_SCHEMAS: ecommerce_shop
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-v7I8Jm9N0P1Q2R3S4T5U6V7W8X9Y0Z1A2B3C4D5E6F7G8H9I0J1K2L3M4N5O6P7Q}
+    ports:
+      - "8082:8082"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      ecommerce-auth:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8082/actuator/health >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  ecommerce-product:
+    build:
+      context: ../../backend/ecommerce-product
+    image: mizan/ecommerce-product:local
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ecommerce?currentSchema=ecommerce_product
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      SPRING_FLYWAY_SCHEMAS: ecommerce_product
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-v7I8Jm9N0P1Q2R3S4T5U6V7W8X9Y0Z1A2B3C4D5E6F7G8H9I0J1K2L3M4N5O6P7Q}
+      SHOP_SERVICE_URL: http://ecommerce-shop:8082
+    ports:
+      - "8083:8083"
+    depends_on:
+      ecommerce-shop:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8083/actuator/health >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
   ecommerce-api-gateway-service:
-    image: ghcr.io/ilhamzefer-sketch/ecommerce-api-gateway:latest
+    build:
+      context: ../../backend/ecommerce-api-gateway
+    image: mizan/ecommerce-api-gateway:local
     restart: unless-stopped
     environment:
       AUTH_SERVICE_URL: http://ecommerce-auth:8081
+      SHOP_SERVICE_URL: http://ecommerce-shop:8082
+      PRODUCT_SERVICE_URL: http://ecommerce-product:8083
       JWT_SECRET_KEY: ${JWT_SECRET_KEY:-v7I8Jm9N0P1Q2R3S4T5U6V7W8X9Y0Z1A2B3C4D5E6F7G8H9I0J1K2L3M4N5O6P7Q}
       CORS_ALLOWED_ORIGINS: http://localhost:3001,http://localhost:5173
     ports:
       - "8080:8080"
     depends_on:
       ecommerce-auth:
+        condition: service_healthy
+      ecommerce-shop:
+        condition: service_healthy
+      ecommerce-product:
         condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8080/actuator/health >/dev/null || exit 1"]
@@ -63,7 +127,11 @@ services:
       start_period: 20s
 
   ecommerce-ui:
-    image: ghcr.io/ilhamzefer-sketch/ecommerce-ui:latest
+    build:
+      context: ../../frontend/ecommerce-ui
+      args:
+        VITE_API_BASE_URL: ""
+    image: mizan/ecommerce-ui:local
     restart: unless-stopped
     ports:
       - "3001:80"

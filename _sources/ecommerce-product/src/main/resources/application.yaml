@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: ecommerce-product
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5433/ecommerce?currentSchema=ecommerce_product}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:password}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+    schemas: ${SPRING_FLYWAY_SCHEMAS:ecommerce_product}
+    create-schemas: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+application:
+  security:
+    jwt-secret: ${JWT_SECRET_KEY:v7I8Jm9N0P1Q2R3S4T5U6V7W8X9Y0Z1A2B3C4D5E6F7G8H9I0J1K2L3M4N5O6P7Q}
+  services:
+    shop-url: ${SHOP_SERVICE_URL:http://localhost:8082}
+server:
+  port: 8083
